@@ -20,4 +20,20 @@ class Model(torch.nn.Module):
         
         self.optimizer = torch.optim.Adam(self.parameters(), lr=0.003)
 
+    def calc(self, input):
+        return self.NN(input)
+    def train(self, yPred, yAct):
+        self.optimizer.zero_grad()
+        loss = nn.functional.huber_loss(yPred, yAct)
+        loss.backward()
+        self.optimizer.step()
+
+model = Model()
+while (True):
+    yPred = model.calc("??????x")
+    model.train(yPred, "??????y")
+
+
+
+
        
