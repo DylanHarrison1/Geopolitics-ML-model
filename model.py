@@ -28,10 +28,6 @@ class Model(torch.nn.Module):
         loss.backward()
         self.optimizer.step()
 
-model = Model()
-while (True):
-    yPred = model.calc("??????x")
-    model.train(yPred, "??????y")
 
 
 
