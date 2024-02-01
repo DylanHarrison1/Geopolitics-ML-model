@@ -2,12 +2,12 @@ from model import Model
 
 
 class Instance():
-    def __init__(self, feedback):
+    def __init__(self, feedback, dbListIn, dbListOut):
         """
         Input:
-        Feedback data?- Binary
-        Model Details- Int
-        
+        feedback data, do we want feedback, Binary - 
+        Model Details, Int - 
+        dbList, list of data used - 
         
         """
         self._feedback = feedback
@@ -16,21 +16,27 @@ class Instance():
     def Run(self, epochs):
         """
         Input:
-        Epoch num- Int
+        epochs, Int - 
 
         """
-        while (True):
-            yPred = self._instance.calc("??????x")
-            self._instance.train(yPred, "??????y") 
+        
 
+        for i in epochs:
+            #Open relevant csv files here
+            docOpen = True
 
+            while (docOpen):
+                yPred = self._instance.calc("??????x")
+                self._instance.train(yPred, "??????y") 
 
+                if self._feedback:
+                    self.__PrintProgress()
 
+                #When csv files are depleted, close them.
+                
 
-
-
-            if self._feedback:
-                self.__PrintProgress()
+        #Final data print goes here
+                    
 
     def __PrintProgress():
         pass
