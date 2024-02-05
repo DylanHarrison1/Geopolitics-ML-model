@@ -15,11 +15,18 @@ def FetchData(row, collumn, directory):
 
 
 def CreateHDIFile():
-    #df = pd.read_csv('..\data\raw\AHDI (1870-2020) (excl income).csv')
-    #while (True):
-
-    #    df.insert()
-    pass
+    #spaghetti logic, but should add in blank columns for missing dates.
+    df = pd.read_csv(os.getcwd() + '..\data\raw\AHDI (1870-2020) (excl income).csv')
+    i = 1
+    while (True):
+        dif = df.iloc[(0,i + 1)] - df.iloc[(0,i)]
+        for j in range(1, dif):
+            a = [''] * 168
+            a[0] = i + j
+            df.insert(i, '', a, allow_duplicates=True)
+            i += 1
+        i += 1
+    
 def Simplify_xxxx_File():
     pass
 
