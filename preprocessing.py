@@ -3,10 +3,10 @@ import os
 #Goals:
 # - 
 # - Create A HDI file per country per year
-# - Simplify 
+# - Similarly format other files 
 # - 
 # - 
-# - 
+# - Create dataset per country with inputs and outputs over time.
 
 def FetchData(row, collumn, directory):
     curDir = os.getcwd()
@@ -27,8 +27,15 @@ def CreateHDIFile():
             i += 1
         i += 1
     
-def Simplify_xxxx_File():
-    pass
+def Remove_LDI():
+    #Removes the Liberal democracy index from the AHDI
+    #AHDI is the geometric mean of 4 values.
+    #Therefore, we ^4, then divide by LDI, then cube root.
+    AHDI = pd.read_csv(os.getcwd() + '..\data\raw\AHDI (1870-2020) (excl income).csv')
+    LDI = None
+    HDI = None #premake?
+    #method to apply to a whole row/ whole table?
+    #Maybe extract into array, then math
 
 
 FetchData(1, None, '\data\\raw\AHDI (1870-2020) (excl income).csv')
