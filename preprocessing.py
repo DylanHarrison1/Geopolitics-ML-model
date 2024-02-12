@@ -32,16 +32,14 @@ def Remove_LDI():
     #Removes the Liberal democracy index from the AHDI
     #AHDI is the geometric mean of 4 values.
     #Therefore, we ^4, then divide by LDI, then cube root.
-    AHDI = pd.read_csv(os.getcwd() + '\data\raw\AHDI (1870-2020) (excl income).csv')
-    LDI = pd.read_csv(os.getcwd() + '\data\raw\Liberal Democracy Index.csv')
-    HDI = pd.read_csv(os.getcwd() + '\data\rawLiberal Democracy Index.csv')
+    AHDI = pd.read_csv(os.getcwd() + '\data\\raw\pure AHDI (1870-2020).csv', encoding='latin-1')
+    LDI = pd.read_csv(os.getcwd() + '\data\\raw\Liberal Democracy Index.csv', encoding='latin-1')
 
-    result_df = (AHDI ** 4 / LDI).apply(np.cbrt)
+    result = (AHDI.iloc[:, 1:] ** 4 / LDI.iloc[:, 1:]).apply(np.cbrt)
+    result.insert(0, AHDI.columns[0], AHDI.iloc[:, 0])
     
-    result_df.to_csv(HDI, index=False)
+    result.to_csv(os.getcwd() + '\data\\raw\HDI (1870-2020).csv', encoding='latin-1', index=False)
 
-    #method to apply to a whole row/ whole table?
-    #Maybe extract into array, then math
 
 
 #FetchData(1, None, '\data\\raw\AHDI (1870-2020) (excl income).csv')
