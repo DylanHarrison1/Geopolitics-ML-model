@@ -28,6 +28,33 @@ def CreateHDIFile():
             i += 1
         i += 1
     
+def AddEmptyColumns(file):
+    filename = os.getcwd() + file
+    df = pd.read_csv(filename)
+
+    # Get list of column names
+    years = df.columns[1:]
+    years = [int(i) for i in years]
+
+    newColumns = []
+
+    #Find difference between 2 years, add that many columns
+    for i in range(len(years) - 1):
+        dif = years[i+1] - years[i] - 1
+        if dif > 0:
+            for j in range(dif):
+                newYear = years[i] + j + 1
+                newColumn = pd.Series("", name=str(newYear), index=df.index)
+                newColumns.append(newColumn)
+        
+
+    df = pd.concat([df] + newColumns, axis=1)
+    
+    
+
+    df.to_csv(filename, index=False)
+
+
 def Remove_LDI():
     #Removes the Liberal democracy index from the AHDI
     #AHDI is the geometric mean of 4 values.
@@ -43,4 +70,6 @@ def Remove_LDI():
 
 
 #FetchData(1, None, '\data\\raw\AHDI (1870-2020) (excl income).csv')
-Remove_LDI()
+#Remove_LDI()
+    
+AddEmptyColumns('\data\\raw\pure AHDI (1870-2020).csv')
