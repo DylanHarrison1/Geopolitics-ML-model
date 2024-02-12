@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import numpy as np
 #Goals:
 # - 
 # - Create A HDI file per country per year
@@ -32,10 +33,15 @@ def Remove_LDI():
     #AHDI is the geometric mean of 4 values.
     #Therefore, we ^4, then divide by LDI, then cube root.
     AHDI = pd.read_csv(os.getcwd() + '..\data\raw\AHDI (1870-2020) (excl income).csv')
-    LDI = None
-    HDI = None #premake?
+    LDI = pd.read_csv(os.getcwd() + 'Liberal Democracy Index.csv')
+    HDI = pd.read_csv(os.getcwd() + 'Liberal Democracy Index.csv')
+
+    result_df = (AHDI ** 4 / LDI).apply(np.cbrt)
+    
+    result_df.to_csv(HDI, index=False)
+
     #method to apply to a whole row/ whole table?
     #Maybe extract into array, then math
 
 
-FetchData(1, None, '\data\\raw\AHDI (1870-2020) (excl income).csv')
+#FetchData(1, None, '\data\\raw\AHDI (1870-2020) (excl income).csv')
