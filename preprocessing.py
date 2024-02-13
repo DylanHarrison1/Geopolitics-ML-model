@@ -14,7 +14,7 @@ def FetchData(row, collumn, directory):
     df = pd.read_csv(curDir + directory)
     print(df.iloc[(0,3)])
 
-
+'''
 def CreateHDIFile():
     #spaghetti logic, but should add in blank columns for missing dates.
     df = pd.read_csv(os.getcwd() + '..\data\raw\AHDI (1870-2020) (excl income).csv')
@@ -27,6 +27,8 @@ def CreateHDIFile():
             df.insert(i, '', a, allow_duplicates=True)
             i += 1
         i += 1
+        '''
+
     
 def AddEmptyColumns(file):
     filename = os.getcwd() + file
@@ -47,13 +49,18 @@ def AddEmptyColumns(file):
                 newColumn = pd.Series("", name=str(newYear), index=df.index)
                 newColumns.append(newColumn)
         
-
     df = pd.concat([df] + newColumns, axis=1)
-    
-    
-
+    df = OrderByDate(df)
     df.to_csv(filename, index=False)
 
+def OrderByDate(df):
+    #Orders columns (excluding first) by date
+    column0 = df.columns[0]
+
+    mainColumns = sorted([col for col in df.columns if col.isdigit()])
+    new_columns = [column0] + mainColumns
+    df = df[new_columns]
+    return df
 
 def Remove_LDI():
     #Removes the Liberal democracy index from the AHDI
@@ -72,4 +79,4 @@ def Remove_LDI():
 #FetchData(1, None, '\data\\raw\AHDI (1870-2020) (excl income).csv')
 #Remove_LDI()
     
-AddEmptyColumns('\data\\raw\pure AHDI (1870-2020).csv')
+AddEmptyColumns('\data\\raw\pure AHDI (1870-2020) copy.csv')
