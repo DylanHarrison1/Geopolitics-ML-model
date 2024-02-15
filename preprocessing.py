@@ -64,25 +64,23 @@ def InterpolateColumn(df, year1, year2, newYear):
     Interpolates across years to estimate missing values
     '''
 
-    new_column_values = []
+    newValues = []
     for i in range(df.shape[0]):
         value1 = df.loc[i, str(year1)]
         value2 = df.loc[i, str(year2)]
         
         # If either value is NaN, skip interpolation
         if pd.isna(value1) or pd.isna(value2):
-            new_column_values.append(None)
+            newValues.append(None)
         else:
             # Perform linear interpolation
             ratio = (newYear - year1) / (year2 - year1)
-            new_value = value1 + (value2 - value1) * ratio
-            new_column_values.append(new_value)
+            newValue = value1 + (value2 - value1) * ratio
+            newValues.append(newValue)
     
     # Add new column to the dataframe
-    new_column_name = str(newYear)
-    df[new_column_name] = new_column_values
-    
-    return df
+    newColumn = pd.Series(newValues, name=str(newYear))
+    return newColumn
 
 
 def OrderByDate(df):
