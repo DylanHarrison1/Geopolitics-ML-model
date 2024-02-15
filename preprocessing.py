@@ -30,7 +30,7 @@ def CreateHDIFile():
         '''
 
     
-def AddEmptyColumns(file):
+def AddEmptyColumns(file, interpolate):
     filename = os.getcwd() + file
     df = pd.read_csv(filename)
 
@@ -46,9 +46,13 @@ def AddEmptyColumns(file):
         if dif > 0:
             for j in range(dif):
                 newYear = years[i] + j + 1
-                newColumn = pd.Series("", name=str(newYear), index=df.index)
-                newColumns.append(newColumn)
-        
+
+                if interpolate:
+                    df[str(newYear)] = df[[str(years[i]), str(years[i+1])]].interpolate(axis=1)[str(newYear)]
+                else:
+                    newColumn = pd.Series("", name=str(newYear), index=df.index)
+                    newColumns.append(newColumn)
+
     df = pd.concat([df] + newColumns, axis=1)
     df = OrderByDate(df)
     df.to_csv(filename, index=False)
@@ -79,4 +83,4 @@ def Remove_LDI():
 #FetchData(1, None, '\data\\raw\AHDI (1870-2020) (excl income).csv')
 #Remove_LDI()
     
-AddEmptyColumns('\data\\raw\pure AHDI (1870-2020) copy.csv')
+AddEmptyColumns('\data\\raw\pure AHDI (1870-2020) copy.csv', True)
