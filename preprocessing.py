@@ -48,14 +48,42 @@ def AddEmptyColumns(file, interpolate):
                 newYear = years[i] + j + 1
 
                 if interpolate:
-                    df[str(newYear)] = df[[str(years[i]), str(years[i+1])]].interpolate(axis=1)[str(newYear)]
+                    newColumn = InterpolateColumn(df, years[i], years[i+1], newYear)
                 else:
                     newColumn = pd.Series("", name=str(newYear), index=df.index)
-                    newColumns.append(newColumn)
+                
+                newColumns.append(newColumn)
 
     df = pd.concat([df] + newColumns, axis=1)
     df = OrderByDate(df)
     df.to_csv(filename, index=False)
+
+
+def InterpolateColumn(df, year1, year2, newYear):
+    '''
+    Interpolates across years to estimate missing values
+    '''
+
+    new_column_values = []
+    for i in range(df.shape[0]):
+        value1 = df.loc[i, str(year1)]
+        value2 = df.loc[i, str(year2)]
+        
+        # If either value is NaN, skip interpolation
+        if pd.isna(value1) or pd.isna(value2):
+            new_column_values.append(None)
+        else:
+            # Perform linear interpolation
+            ratio = (newYear - year1) / (year2 - year1)
+            new_value = value1 + (value2 - value1) * ratio
+            new_column_values.append(new_value)
+    
+    # Add new column to the dataframe
+    new_column_name = str(newYear)
+    df[new_column_name] = new_column_values
+    
+    return df
+
 
 def OrderByDate(df):
     #Orders columns (excluding first) by date
