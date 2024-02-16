@@ -95,4 +95,6 @@ Code used to run functions
 #Remove_LDI()
     
 #AddEmptyColumns('\data\\raw\pure AHDI (1870-2020) copy.csv', True)
-RemoveColumns('\data\\raw\OECD population by sex, age range.csv', [0,1,2])
+
+#Action, TIME_HORIZ, Time Horizon, 
+RemoveColumns('\data\\raw\OECD population by sex, age range.csv', [0,])
