@@ -82,6 +82,7 @@ def Remove_LDI():
     result.to_csv(os.getcwd() + '\data\\raw\HDI (1870-2020).csv', encoding='latin-1', index=False)
 
 def RemoveColumns(path, columns):
+    path = os.getcwd() + path
     df = pd.read_csv(path)
     df.drop(df.columns[columns], axis=1, inplace=True)
     df.to_csv(path, index=False)
