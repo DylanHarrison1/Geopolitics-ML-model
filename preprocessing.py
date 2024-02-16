@@ -8,27 +8,6 @@ import numpy as np
 # - 
 # - 
 # - Create dataset per country with inputs and outputs over time.
-
-def FetchData(row, collumn, directory):
-    curDir = os.getcwd()
-    df = pd.read_csv(curDir + directory)
-    print(df.iloc[(0,3)])
-
-'''
-def CreateHDIFile():
-    #spaghetti logic, but should add in blank columns for missing dates.
-    df = pd.read_csv(os.getcwd() + '..\data\raw\AHDI (1870-2020) (excl income).csv')
-    i = 1
-    while (True):
-        dif = df.iloc[(0,i + 1)] - df.iloc[(0,i)]
-        for j in range(1, dif):
-            a = [''] * 168
-            a[0] = i + j
-            df.insert(i, '', a, allow_duplicates=True)
-            i += 1
-        i += 1
-        '''
-
     
 def AddEmptyColumns(file, interpolate):
     filename = os.getcwd() + file
@@ -58,7 +37,6 @@ def AddEmptyColumns(file, interpolate):
     df = OrderByDate(df)
     df.to_csv(filename, index=False)
 
-
 def InterpolateColumn(df, year1, year2, newYear):
     '''
     Interpolates across years to estimate missing values
@@ -82,7 +60,6 @@ def InterpolateColumn(df, year1, year2, newYear):
     newColumn = pd.Series(newValues, name=str(newYear))
     return newColumn
 
-
 def OrderByDate(df):
     #Orders columns (excluding first) by date
     column0 = df.columns[0]
@@ -104,9 +81,17 @@ def Remove_LDI():
     
     result.to_csv(os.getcwd() + '\data\\raw\HDI (1870-2020).csv', encoding='latin-1', index=False)
 
+def RemoveColumns(path, columns):
+    df = pd.read_csv(path)
+    df.drop(df.columns[columns], axis=1, inplace=True)
+    df.to_csv(path, index=False)
 
 
+'''
+Code used to run functions
+'''
 #FetchData(1, None, '\data\\raw\AHDI (1870-2020) (excl income).csv')
 #Remove_LDI()
     
-AddEmptyColumns('\data\\raw\pure AHDI (1870-2020) copy.csv', True)
+#AddEmptyColumns('\data\\raw\pure AHDI (1870-2020) copy.csv', True)
+RemoveColumns('\data\\raw\OECD population by sex, age range.csv', [0,1,2])
