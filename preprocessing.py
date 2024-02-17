@@ -124,4 +124,4 @@ Code used to run functions
 #Action, TIME_HORIZ, Time Horizon, 
 #RemoveColumns('\data\\raw\OECD population by sex, age range.csv', [])
 
-rearrangeOECD('\data\\raw\OECD population by sex, age range.csv', '\data\\raw\Demographics')
+rearrangeOECD('\data\\raw\OECD population by sex, age range.csv', '\data\\raw\Demographics.csv')
