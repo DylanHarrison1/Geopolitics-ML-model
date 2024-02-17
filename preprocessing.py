@@ -97,4 +97,4 @@ Code used to run functions
 #AddEmptyColumns('\data\\raw\pure AHDI (1870-2020) copy.csv', True)
 
 #Action, TIME_HORIZ, Time Horizon, 
-RemoveColumns('\data\\raw\OECD population by sex, age range.csv', [0,])
+#RemoveColumns('\data\\raw\OECD population by sex, age range.csv', [])
