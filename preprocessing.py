@@ -87,6 +87,31 @@ def RemoveColumns(path, columns):
     df.drop(df.columns[columns], axis=1, inplace=True)
     df.to_csv(path, index=False)
 
+import pandas as pd
+
+def rearrangeOECD(inputPath, outputPath):
+
+    inputPath = os.getcwd() + inputPath
+    outputPath = os.getcwd() + outputPath
+    df = pd.read_csv(inputPath)
+
+    years = list(range(1950, 2023))
+    for year in years:
+        df[year] = None
+
+    # Goes through df in blocks of 72
+    for i in range(0, len(df), 72):
+        block = df.iloc[i:i+72]  
+        blockValues = block['OBS_VALUE'].values
+        df.loc[i, years] = blockValues  # Put the values into the block's top row
+
+    # Keep only the first row of each block of 72 rows
+        
+    df = df.iloc[::72]
+    df.to_csv(outputPath, index=False)
+
+
+
 
 '''
 Code used to run functions
@@ -98,3 +123,5 @@ Code used to run functions
 
 #Action, TIME_HORIZ, Time Horizon, 
 #RemoveColumns('\data\\raw\OECD population by sex, age range.csv', [])
+
+rearrangeOECD('\data\\raw\OECD population by sex, age range.csv', '\data\\raw\Demographics')
