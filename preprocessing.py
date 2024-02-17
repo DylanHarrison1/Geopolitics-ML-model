@@ -154,3 +154,4 @@ Code used to run functions
 #RemoveColumns('\data\\raw\Demographics.csv', [5, 6])
 
 #OrderCSVRows('\data\\raw\Demographics.csv', [0, 1, 4, 3, 2])
+OrderCSVRows('\data\raw\HDI (1870-2020).csv', [0])
