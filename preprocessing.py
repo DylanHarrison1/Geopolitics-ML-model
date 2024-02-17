@@ -136,7 +136,7 @@ def OrderCSVRows(path, columnNumbers):
     df = pd.read_csv(path)
     sorted_df = df.sort_values(by=[df.columns[i] for i in columnNumbers])
     
-    df.to_csv(path, index=False)
+    sorted_df.to_csv(path, index=False)
 
 
 '''
@@ -153,4 +153,4 @@ Code used to run functions
 #rearrangeOECD('\data\\raw\OECD population by sex, age range.csv', '\data\\raw\Demographics.csv')
 #RemoveColumns('\data\\raw\Demographics.csv', [5, 6])
 
-OrderCSVRows('\data\\raw\Demographics.csv', [0, 1, 4, 3, 2])
+#OrderCSVRows('\data\\raw\Demographics.csv', [0, 1, 4, 3, 2])
