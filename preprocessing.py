@@ -10,6 +10,13 @@ import numpy as np
 # - Create dataset per country with inputs and outputs over time.
     
 def AddEmptyColumns(file, interpolate):
+    '''
+    Designed for DB's ordered by year. 
+    If some years are missing, it will add them in with 
+    blank values or linearly interpolated values (if 
+    "interpolate" is True or False")
+    '''
+
     filename = os.getcwd() + file
     df = pd.read_csv(filename)
 
@@ -61,7 +68,10 @@ def InterpolateColumn(df, year1, year2, newYear):
     return newColumn
 
 def OrderByDate(df):
-    #Orders columns (excluding first) by date
+    '''
+    Orders columns (excluding first) by date
+    '''
+    
     column0 = df.columns[0]
 
     mainColumns = sorted([col for col in df.columns if col.isdigit()])
@@ -70,9 +80,12 @@ def OrderByDate(df):
     return df
 
 def Remove_LDI():
+    '''
     #Removes the Liberal democracy index from the AHDI
     #AHDI is the geometric mean of 4 values.
     #Therefore, we ^4, then divide by LDI, then cube root.
+    '''
+   
     AHDI = pd.read_csv(os.getcwd() + '\data\\raw\pure AHDI (1870-2020).csv', encoding='latin-1')
     LDI = pd.read_csv(os.getcwd() + '\data\\raw\Liberal Democracy Index.csv', encoding='latin-1')
 
@@ -82,14 +95,18 @@ def Remove_LDI():
     result.to_csv(os.getcwd() + '\data\\raw\HDI (1870-2020).csv', encoding='latin-1', index=False)
 
 def RemoveColumns(path, columns):
+    '''
+    Removes specified list of columns (index from 0)
+    '''
     path = os.getcwd() + path
     df = pd.read_csv(path)
     df.drop(df.columns[columns], axis=1, inplace=True)
     df.to_csv(path, index=False)
 
-import pandas as pd
-
 def rearrangeOECD(inputPath, outputPath):
+    '''
+    Makes OECD demographics more compact by turning 400000 rows into like 5000*70
+    '''
 
     inputPath = os.getcwd() + inputPath
     outputPath = os.getcwd() + outputPath
@@ -110,7 +127,16 @@ def rearrangeOECD(inputPath, outputPath):
     df = df.iloc[::73]
     df.to_csv(outputPath, index=False)
 
-
+def OrderCSVRows(path, columnNumbers):
+    '''
+    Orders CSV rows alphabetically by certain columns.
+    List is inputted of column precedence.
+    '''
+    path = os.getcwd() + path
+    df = pd.read_csv(path)
+    sorted_df = df.sort_values(by=[df.columns[i] for i in columnNumbers])
+    
+    df.to_csv(path, index=False)
 
 
 '''
@@ -124,4 +150,7 @@ Code used to run functions
 #Action, TIME_HORIZ, Time Horizon, 
 #RemoveColumns('\data\\raw\OECD population by sex, age range.csv', [])
 
-rearrangeOECD('\data\\raw\OECD population by sex, age range.csv', '\data\\raw\Demographics.csv')
+#rearrangeOECD('\data\\raw\OECD population by sex, age range.csv', '\data\\raw\Demographics.csv')
+#RemoveColumns('\data\\raw\Demographics.csv', [5, 6])
+
+OrderCSVRows('\data\\raw\Demographics.csv', [])
