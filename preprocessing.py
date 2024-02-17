@@ -155,3 +155,7 @@ Code used to run functions
 
 #OrderCSVRows('\data\\raw\Demographics.csv', [0, 1, 4, 3, 2])
 #OrderCSVRows('\data\\raw\HDI (1870-2020).csv', [0])
+
+AddEmptyColumns('\data\\raw\HDI (1870-2020).csv', True)
+OrderCSVRows('\data\\raw\Liberal Democracy Index.csv')
+AddEmptyColumns('\data\\raw\Liberal Democracy Index.csv', True)
