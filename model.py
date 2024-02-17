@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Model(torch.nn.Module):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, inputDims) -> None:
         super(Model, self).__init__()
 
         layers = [
@@ -14,7 +14,7 @@ class Model(torch.nn.Module):
             nn.ReLU(),
             nn.Linear(64, 32),
             nn.ReLU(),
-            nn.Linear(32, 32)
+            nn.Linear(32, 5)
         ]
 
         self.NN = torch.nn.Sequential(*layers)
