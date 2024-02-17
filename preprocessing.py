@@ -100,14 +100,14 @@ def rearrangeOECD(inputPath, outputPath):
         df[year] = None
 
     # Goes through df in blocks of 72
-    for i in range(0, len(df), 72):
-        block = df.iloc[i:i+72]  
+    for i in range(0, len(df), 73):
+        block = df.iloc[i:i+73]  
         blockValues = block['OBS_VALUE'].values
         df.loc[i, years] = blockValues  # Put the values into the block's top row
 
     # Keep only the first row of each block of 72 rows
         
-    df = df.iloc[::72]
+    df = df.iloc[::73]
     df.to_csv(outputPath, index=False)
 
 
