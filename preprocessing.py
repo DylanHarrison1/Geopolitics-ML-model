@@ -153,4 +153,4 @@ Code used to run functions
 #rearrangeOECD('\data\\raw\OECD population by sex, age range.csv', '\data\\raw\Demographics.csv')
 #RemoveColumns('\data\\raw\Demographics.csv', [5, 6])
 
-OrderCSVRows('\data\\raw\Demographics.csv', [])
+OrderCSVRows('\data\\raw\Demographics.csv', [0, 1, 4, 3, 2])
