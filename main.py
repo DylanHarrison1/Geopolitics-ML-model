@@ -48,11 +48,31 @@ class Instance():
             LDI.drop(LDI.columns[range(1,81)], axis=1, inplace=True)
             HDI.drop(HDI.columns[range(1,81)], axis=1, inplace=True)
 
+            self.__CountryLoop(Demog, LDI, HDI, False)
+    
+        #Saves model for further testing
+        parameters = []
+        for name, param in self._instance.named_parameters():
+            parameters.append({'Name': name, 'Value': param.data.numpy()})
+
+        df = pd.DataFrame(parameters)
+        df.to_csv('model_parameters.csv', index=False)
+
+        self.__PrintGraph()
+        self.__TestModel(Demog, LDI, HDI)
+                    
+
+    def __CountryLoop(self, Demog, LDI, HDI, Testing):
+        
+            score = []
+
             #loops through all coutries in Demography
             for j in range(0, 5544, 99):
-                x = Demog.iloc[[j + 8, j + 93, j + 94, j + 95], range(7, 73)]
-                x = pd.concat([x, self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)])], ignore_index=True)
+                x1 = Demog.iloc[[j + 8, j + 93, j + 94, j + 95], range(7, 73)]
+                x2 = self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)])
+                x = pd.concat([x1, x2], ignore_index=True)
                 y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
+
                 if not isinstance(y, pd.DataFrame):
                     continue
                 elif y.isna().any().any():
@@ -62,27 +82,40 @@ class Instance():
 
                 #Loops through all years for country
                 lossMean = 0
-                for k in range(x.shape[1]):
-                    yPred = self._instance.calc(x.iloc[:,k])
-                    loss, gradient = self._instance.train(yPred, y[0, range(k, k+5)]) 
-                    lossMean += loss
 
-                lossMean /= x.shape[1]
-                self._lossData.append(lossMean)
-                if self._feedback:
+                if Testing:
+                        k = x.shape[1]
+                        yPred = self._instance.calc(x.iloc[:,k])
+                        yAct = y[0, range(k, k+5)]
+                        
+                        #fixes relative closeness between 0 and 1
+                        relCloseness = abs(yAct / yPred)
+                        if not (-1 < relCloseness or relCloseness < 1):
+                            relCloseness = 1 / relCloseness
+                        score.append(relCloseness)
+
+                else:
                     
-                    self.__PrintProgress(j, lossMean, gradient)
 
-                
+                    for k in range(x.shape[1] - 5):
+                        yPred = self._instance.calc(x.iloc[:,k])
+                        loss, gradient = self._instance.train(yPred, y[0, range(k, k+5)]) 
+                        lossMean += loss
 
-        #Saves model for further testing
-        parameters = []
-        for name, param in self._instance.named_parameters():
-            parameters.append({'Name': name, 'Value': param.data.numpy()})
+                    lossMean /= x.shape[1]
+                    self._lossData.append(lossMean)
+                    if self._feedback:
+                        
+                        self.__PrintProgress(j, lossMean, gradient)
 
-        df = pd.DataFrame(parameters)
-        df.to_csv('model_parameters.csv', index=False)
+            if Testing:
+                for i in score:
+                    total += i
+                total = total / len(score)   
+                print(total) 
 
+
+    def __PrintGraph(self):
         data = [i.detach().numpy() for i in self._lossData]
         x = np.arange(len(data))
         m, b = np.polyfit(x, data, 1)
@@ -98,12 +131,12 @@ class Instance():
         plt.ylabel('Average Loss')
         plt.title('Loss over Time')
 
-        
-
         plt.legend()
         plt.grid(True)
         plt.show()
-                    
+
+    def __TestModel(self, Demog, LDI, HDI):
+        self.__CountryLoop(Demog, LDI, HDI, True)
 
     def __PrintProgress(self, j, lossMean, gradient):
         print(j/99)
