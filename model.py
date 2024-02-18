@@ -42,8 +42,9 @@ class Model(torch.nn.Module):
         #print(yPred, yAct)
         loss = nn.functional.huber_loss(yPred, yAct)
         loss.backward()
+
         self.optimizer.step()
-        return loss
+        return loss, [param.grad for param in self.parameters()]
     
     def __tensorise(self, x):
         '''

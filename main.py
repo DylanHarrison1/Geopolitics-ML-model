@@ -55,19 +55,22 @@ class Instance():
                 y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
                 if not isinstance(y, pd.DataFrame):
                     continue
+                elif df.isna().any().any():
+                #Checks all cells have some value
+                    continue
                 y = y.values
 
                 #Loops through all years for country
                 lossMean = 0
                 for k in range(x.shape[1]):
                     yPred = self._instance.calc(x.iloc[:,k])
-                    loss = self._instance.train(yPred, y[0, range(k, k+5)]) 
+                    loss, gradient = self._instance.train(yPred, y[0, range(k, k+5)]) 
                     lossMean += loss
 
 
                 if self._feedback:
                     lossMean /= x.shape[1]
-                    self.__PrintProgress(j, lossMean)
+                    self.__PrintProgress(j, lossMean, gradient)
 
                 
 
@@ -80,7 +83,10 @@ class Instance():
         df.to_csv('model_parameters.csv', index=False)
                     
 
-    def __PrintProgress(self, j, lossMean):
+    def __PrintProgress(self, j, lossMean, gradient):
         print(j/99)
+        print("~~~~~loss~~~~~")
         print(lossMean)
+        print("~~~~~latest gradient~~~~~")
+        print(gradient[0])
     
