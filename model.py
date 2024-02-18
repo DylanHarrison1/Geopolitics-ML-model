@@ -31,6 +31,8 @@ class Model(torch.nn.Module):
         yAct, self.__tensorise(yAct)
 
         self.optimizer.zero_grad()
+
+        print(yPred, yAct)
         loss = nn.functional.mse_loss(yPred, yAct)
         loss.backward()
         self.optimizer.step()
