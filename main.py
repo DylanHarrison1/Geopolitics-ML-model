@@ -55,12 +55,13 @@ class Instance():
                 y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
                 if not isinstance(y, pd.DataFrame):
                     continue
-            
+                y.columns = None
+
                 #Loops through all years for country
                 lossMean = 0
                 for k in range(x.shape[1]):
                     yPred = self._instance.calc(x.iloc[:,k])
-                    loss = self._instance.train(yPred, y.iloc[:, range(k, k+5)]) 
+                    loss = self._instance.train(yPred, y.iloc[0, range(k, k+5)]) 
                     lossMean += loss
 
 
