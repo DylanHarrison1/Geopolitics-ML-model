@@ -1,0 +1,76 @@
+Name,Value
+NN.0.weight,"[[nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]
+ [nan nan nan nan nan]]"
+NN.0.bias,"[nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+ nan nan]"
+NN.2.weight,"[[nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]]"
+NN.2.bias,"[nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+ nan nan]"
+NN.4.weight,"[[nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]
+ [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+  nan nan]]"
+NN.4.bias,[nan nan nan nan nan]

@@ -20,6 +20,15 @@ class Model(torch.nn.Module):
         
         self.optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
 
+        self.__initialize_weights()
+
+    def __initialize_weights(self):
+        for i in self.modules():
+            if isinstance(i, nn.Linear):
+                nn.init.xavier_uniform_(m.weight)
+                if i.bias is not None:
+                    nn.init.constant_(i.bias, 0)
+
     def calc(self, input):
         input = self.__tensorise(input)
         return self.NN(input)
