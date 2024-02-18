@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import numpy as np
 from preprocessing import RemoveColumns
-
+import matplotlib.pyplot as plt
 
 class Instance():
     def __init__(self, feedback):
@@ -82,6 +82,27 @@ class Instance():
 
         df = pd.DataFrame(parameters)
         df.to_csv('model_parameters.csv', index=False)
+
+        data = self._lossData
+        x = np.arange(len(data))
+        m, b = np.polyfit(x, data, 1)
+
+        # Create the plot
+        plt.figure(figsize=(8, 5))
+        plt.scatter(x, data, color='blue', label='Data Points')
+        plt.plot(x, m*x + b, color='red', label='Line of Best Fit')
+
+        # Add labels and title
+        plt.xlabel('Index')
+        plt.ylabel('Values')
+        plt.title('Graph with Line of Best Fit')
+
+        # Add legend
+        plt.legend()
+
+        # Show plot
+        plt.grid(True)
+        plt.show()
                     
 
     def __PrintProgress(self, j, lossMean, gradient):
