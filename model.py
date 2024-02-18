@@ -8,13 +8,13 @@ class Model(torch.nn.Module):
         super(Model, self).__init__()
 
         layers = [
-            nn.Linear(inputDims, 64),
+            nn.Linear(inputDims, 20),
             nn.ReLU(),
-            nn.Linear(64, 64),
+            nn.Linear(20, 20),
             nn.ReLU(),
-            nn.Linear(64, 32),
+            nn.Linear(20, 20),
             nn.ReLU(),
-            nn.Linear(32, 5)
+            nn.Linear(20, 5)
         ]
 
         self.NN = torch.nn.Sequential(*layers)

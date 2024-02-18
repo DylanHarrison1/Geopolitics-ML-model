@@ -6,7 +6,7 @@ from preprocessing import RemoveColumns
 
 
 class Instance():
-    def __init__(self, feedback, dbListIn, dbListOut):
+    def __init__(self, feedback):
         """
         Input:
         feedback data, do we want feedback, Binary - 
@@ -15,7 +15,7 @@ class Instance():
         
         """
         self._feedback = feedback
-        self._instance = Model(20)
+        self._instance = Model(4)
 
     def __DemogToHDI_LDI(self, df, key):
         '''
@@ -49,24 +49,31 @@ class Instance():
 
 
             for j in range(0, 5544, 99):
-                x = self.__DemogToHDI_LDI(LDI, Demog.iloc[(i,0)])
+                x = Demog.iloc[[j + 8, j + 93, j + 94, j + 95], range(7, 73)]
+                x = x.append(self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)]), ignore_index=True)
 
-                y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(i,0)])
+                y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
                 if y == None:
                     continue
-
-                yPred = self._instance.calc("??????x")
-                self._instance.train(yPred, "y") 
+                
+                for k in range():
+                    yPred = self._instance.calc(x.iloc[:,k])
+                    self._instance.train(yPred, y.iloc[:, range(k, k+5)]) 
 
                 if self._feedback:
-                    self.__PrintProgress()
+                    self.__PrintProgress(j)
 
-                #When csv files are depleted, close them.
                 
 
-        #Final data print goes here
+        #Saves model for further testing
+        parameters = []
+        for name, param in self.Instance.named_parameters():
+            parameters.append({'Name': name, 'Value': param.data.numpy()})
+
+        df = pd.DataFrame(parameters)
+        df.to_csv('model_parameters.csv', index=False)
                     
 
-    def __PrintProgress():
-        pass
+    def __PrintProgress(self, j):
+        print(j/99)
     
