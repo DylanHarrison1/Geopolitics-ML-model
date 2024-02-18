@@ -27,8 +27,8 @@ class Model(torch.nn.Module):
         return self.NN(input)
     
     def train(self, yPred, yAct):
-        yPred, self.__tensorise(yPred)
-        yAct, self.__tensorise(yAct)
+        yPred = self.__tensorise(yPred)
+        yAct = self.__tensorise(yAct)
 
         self.optimizer.zero_grad()
 

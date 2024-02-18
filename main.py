@@ -50,7 +50,7 @@ class Instance():
             #loops through all coutries in Demography
             for j in range(0, 5544, 99):
                 x = Demog.iloc[[j + 8, j + 93, j + 94, j + 95], range(7, 73)]
-                x = pd.concat(x, self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)]), ignore_index=True)
+                x = x.append(self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)]), ignore_index=True)
 
                 y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
                 if not isinstance(y, pd.DataFrame):
@@ -61,7 +61,7 @@ class Instance():
                 lossMean = 0
                 for k in range(x.shape[1]):
                     yPred = self._instance.calc(x.iloc[:,k])
-                    loss = self._instance.train(yPred, y.iloc[0, range(k, k+5)]) 
+                    loss = self._instance.train(yPred, y[0, range(k, k+5)]) 
                     lossMean += loss
 
 
