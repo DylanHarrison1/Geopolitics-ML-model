@@ -83,24 +83,24 @@ class Instance():
         df = pd.DataFrame(parameters)
         df.to_csv('model_parameters.csv', index=False)
 
-        data = self._lossData
+        data = [i.detach().numpy() for i in self._lossData]
         x = np.arange(len(data))
         m, b = np.polyfit(x, data, 1)
 
-        # Create the plot
+        
         plt.figure(figsize=(8, 5))
-        plt.scatter(x, data, color='blue', label='Data Points')
+        plt.scatter(x, data, color='green', label='Data Points')
         plt.plot(x, m*x + b, color='red', label='Line of Best Fit')
+        #Stop outliers from distorting the graph
+        plt.ylim(min(data), max(data) * 0.5)
+        
+        plt.xlabel('Time (51 units=1 epoch)')
+        plt.ylabel('Average Loss')
+        plt.title('Loss over Time')
 
-        # Add labels and title
-        plt.xlabel('Index')
-        plt.ylabel('Values')
-        plt.title('Graph with Line of Best Fit')
+        
 
-        # Add legend
         plt.legend()
-
-        # Show plot
         plt.grid(True)
         plt.show()
                     
