@@ -50,12 +50,12 @@ class Instance():
             #loops through all coutries in Demography
             for j in range(0, 5544, 99):
                 x = Demog.iloc[[j + 8, j + 93, j + 94, j + 95], range(7, 73)]
-                x = x.append(self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)]), ignore_index=True)
+                x = pd.concat(x, self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)]), ignore_index=True)
 
                 y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
                 if not isinstance(y, pd.DataFrame):
                     continue
-                y.columns = None
+                y = y.values
 
                 #Loops through all years for country
                 lossMean = 0
