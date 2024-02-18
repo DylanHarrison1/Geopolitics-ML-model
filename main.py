@@ -15,7 +15,7 @@ class Instance():
         
         """
         self._feedback = feedback
-        self._instance = Model(4)
+        self._instance = Model(5)
 
     def __DemogToHDI_LDI(self, df, key):
         '''
@@ -47,7 +47,7 @@ class Instance():
             LDI.drop(LDI.columns[range(1,81)], axis=1, inplace=True)
             HDI.drop(HDI.columns[range(1,81)], axis=1, inplace=True)
 
-
+            #loops through all coutries in Demography
             for j in range(0, 5544, 99):
                 x = Demog.iloc[[j + 8, j + 93, j + 94, j + 95], range(7, 73)]
                 x = x.append(self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)]), ignore_index=True)
@@ -55,7 +55,8 @@ class Instance():
                 y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
                 if not isinstance(y, pd.DataFrame):
                     continue
-                
+            
+                #Loops through all years for country
                 lossMean = 0
                 for k in range(x.shape[1]):
                     yPred = self._instance.calc(x.iloc[:,k])
