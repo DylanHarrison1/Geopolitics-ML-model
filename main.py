@@ -56,12 +56,16 @@ class Instance():
                 if y == None:
                     continue
                 
-                for k in range():
+                lossMean = 0
+                for k in range(x.shape[1]):
                     yPred = self._instance.calc(x.iloc[:,k])
-                    self._instance.train(yPred, y.iloc[:, range(k, k+5)]) 
+                    loss = self._instance.train(yPred, y.iloc[:, range(k, k+5)]) 
+                    lossMean += loss
+
 
                 if self._feedback:
-                    self.__PrintProgress(j)
+                    lossMean /= x.shape[1]
+                    self.__PrintProgress(j, lossMean)
 
                 
 
@@ -74,6 +78,7 @@ class Instance():
         df.to_csv('model_parameters.csv', index=False)
                     
 
-    def __PrintProgress(self, j):
+    def __PrintProgress(self, j, lossMean):
         print(j/99)
+        print(lossMean)
     
