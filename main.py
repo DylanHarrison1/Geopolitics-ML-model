@@ -53,7 +53,7 @@ class Instance():
                 x = x.append(self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)]), ignore_index=True)
 
                 y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
-                if isinstance(y, pd.DataFrame):
+                if not isinstance(y, pd.DataFrame):
                     continue
                 
                 lossMean = 0
