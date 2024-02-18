@@ -16,6 +16,7 @@ class Instance():
         """
         self._feedback = feedback
         self._instance = Model(5)
+        self._lossData = []
 
     def __DemogToHDI_LDI(self, df, key):
         '''
@@ -50,8 +51,7 @@ class Instance():
             #loops through all coutries in Demography
             for j in range(0, 5544, 99):
                 x = Demog.iloc[[j + 8, j + 93, j + 94, j + 95], range(7, 73)]
-                x = x.append(self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)]), ignore_index=True)
-
+                x = pd.concat([x, self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)])], ignore_index=True)
                 y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
                 if not isinstance(y, pd.DataFrame):
                     continue
@@ -67,9 +67,10 @@ class Instance():
                     loss, gradient = self._instance.train(yPred, y[0, range(k, k+5)]) 
                     lossMean += loss
 
-
+                lossMean /= x.shape[1]
+                self._lossData.append(lossMean)
                 if self._feedback:
-                    lossMean /= x.shape[1]
+                    
                     self.__PrintProgress(j, lossMean, gradient)
 
                 
@@ -87,6 +88,6 @@ class Instance():
         print(j/99)
         print("~~~~~loss~~~~~")
         print(lossMean)
-        print("~~~~~latest gradient~~~~~")
-        print(gradient[0])
+        #print("~~~~~latest gradient~~~~~")
+        #print(gradient[0])
     
