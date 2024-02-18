@@ -44,8 +44,7 @@ class Model(torch.nn.Module):
             x = x.tolist()
        
         if isinstance(x, list):
-            x = [float(i) for i in x]
-            x = torch.tensor(x)
+            x = torch.tensor(x, dtype=torch.float32)
         
     
         return x
