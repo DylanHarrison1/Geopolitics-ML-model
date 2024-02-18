@@ -58,8 +58,9 @@ class Instance():
         df = pd.DataFrame(parameters)
         df.to_csv('model_parameters.csv', index=False)
 
-        self.__PrintGraph()
         self.__TestModel(Demog, LDI, HDI)
+        self.__PrintGraph()
+        
                     
 
     def __CountryLoop(self, Demog, LDI, HDI, Testing):
@@ -84,14 +85,15 @@ class Instance():
                 lossMean = 0
 
                 if Testing:
-                        k = x.shape[1]
-                        yPred = self._instance.calc(x.iloc[:,k])
+                        k = x.shape[1] - 1
+                        yPred = self._instance.calc(x.iloc[:,k]).detach().numpy()
                         yAct = y[0, range(k, k+5)]
                         
                         #fixes relative closeness between 0 and 1
-                        relCloseness = abs(yAct / yPred)
-                        if not (-1 < relCloseness or relCloseness < 1):
-                            relCloseness = 1 / relCloseness
+                        relCloseness = abs(yAct/ yPred)
+                        for element in relCloseness:
+                            if not (-1 < element and element < 1):
+                                element = 1 / element
                         score.append(relCloseness)
 
                 else:
@@ -109,9 +111,11 @@ class Instance():
                         self.__PrintProgress(j, lossMean, gradient)
 
             if Testing:
+                total = [0,0,0,0,0]
                 for i in score:
-                    total += i
-                total = total / len(score)   
+                    for j in range(len(total)):
+                        total[j] += i[j]
+                total = [i / len(score) for i in total] 
                 print(total) 
 
 
