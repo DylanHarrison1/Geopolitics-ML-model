@@ -32,7 +32,7 @@ class Model(torch.nn.Module):
 
         self.optimizer.zero_grad()
 
-        print(yPred, yAct)
+        #print(yPred, yAct)
         loss = nn.functional.mse_loss(yPred, yAct)
         loss.backward()
         self.optimizer.step()
@@ -45,7 +45,7 @@ class Model(torch.nn.Module):
         if isinstance(x, pd.Series):
             x = x.tolist()
        
-        if isinstance(x, list):
+        if isinstance(x, list) or isinstance(np.ndarray):
             x = torch.tensor(x, dtype=torch.float32)
         
     
