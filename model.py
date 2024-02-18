@@ -25,7 +25,7 @@ class Model(torch.nn.Module):
     def __initialize_weights(self):
         for i in self.modules():
             if isinstance(i, nn.Linear):
-                nn.init.xavier_uniform_(m.weight)
+                nn.init.xavier_uniform_(i.weight)
                 if i.bias is not None:
                     nn.init.constant_(i.bias, 0)
 
