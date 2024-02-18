@@ -40,9 +40,14 @@ class Model(torch.nn.Module):
         '''
         Converts things to tensors (if they aren't already)
         '''
+        if isinstance(x, pd.Series):
+            x = x.tolist()
+       
+        if isinstance(x, list):
+            x = [float(i) for i in x]
+            x = torch.tensor(x)
         
-        if isinstance(x, list) or isinstance(x, pd.Series):
-            item = x.tensor(input)
+    
         return x
 
 
