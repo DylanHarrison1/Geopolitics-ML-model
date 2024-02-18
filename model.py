@@ -13,14 +13,12 @@ class Model(torch.nn.Module):
             nn.ReLU(),
             nn.Linear(20, 20),
             nn.ReLU(),
-            nn.Linear(20, 20),
-            nn.ReLU(),
             nn.Linear(20, 5)
         ]
 
         self.NN = torch.nn.Sequential(*layers)
         
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.003)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
 
     def calc(self, input):
         input = self.__tensorise(input)
