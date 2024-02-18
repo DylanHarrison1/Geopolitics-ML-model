@@ -22,13 +22,26 @@ class Model(torch.nn.Module):
         self.optimizer = torch.optim.Adam(self.parameters(), lr=0.003)
 
     def calc(self, input):
+        input = self.__tensorise(input)
         return self.NN(input)
+    
     def train(self, yPred, yAct):
+        yPred, yAct = self.__tensorise([yPred, yAct])
+        
         self.optimizer.zero_grad()
         loss = nn.functional.huber_loss(yPred, yAct)
         loss.backward()
         self.optimizer.step()
         return loss
+    
+    def __tensorise(self, x):
+        '''
+        Converts things to tensors (if they aren't already)
+        '''
+        for item in x:
+            if isinstance(item, list):
+                item = torch.tensor(input)
+        return x
 
 
 
