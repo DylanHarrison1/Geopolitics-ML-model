@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import numpy as np
+import pandas as pd
 
 
 class Model(torch.nn.Module):
@@ -26,8 +27,9 @@ class Model(torch.nn.Module):
         return self.NN(input)
     
     def train(self, yPred, yAct):
-        yPred, yAct = self.__tensorise([yPred, yAct])
-        
+        yPred, self.__tensorise(yPred)
+        yAct, self.__tensorise(yAct)
+
         self.optimizer.zero_grad()
         loss = nn.functional.huber_loss(yPred, yAct)
         loss.backward()
@@ -38,9 +40,9 @@ class Model(torch.nn.Module):
         '''
         Converts things to tensors (if they aren't already)
         '''
-        for item in x:
-            if isinstance(item, list):
-                item = torch.tensor(input)
+        
+        if isinstance(x, list) or isinstance(x, pd.Series):
+            item = x.tensor(input)
         return x
 
 
