@@ -55,7 +55,7 @@ class Instance():
                 y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
                 if not isinstance(y, pd.DataFrame):
                     continue
-                elif df.isna().any().any():
+                elif y.isna().any().any():
                 #Checks all cells have some value
                     continue
                 y = y.values
