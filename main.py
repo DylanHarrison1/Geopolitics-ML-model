@@ -35,7 +35,7 @@ class Instance():
         """
         
 
-        for i in epochs:
+        for i in range(epochs):
             #Open relevant csv files here
             Demog = pd.read_csv(os.getcwd() + '\data\\processed\Demographics.csv')
             LDI = pd.read_csv(os.getcwd() + '\data\\processed\HDI (1870-2020).csv')
