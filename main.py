@@ -73,7 +73,7 @@ class Instance():
 
         #Saves model for further testing
         parameters = []
-        for name, param in self.Instance.named_parameters():
+        for name, param in self._instance.named_parameters():
             parameters.append({'Name': name, 'Value': param.data.numpy()})
 
         df = pd.DataFrame(parameters)
