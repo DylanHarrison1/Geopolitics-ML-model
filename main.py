@@ -90,9 +90,9 @@ class Instance():
                         yAct = y[0, range(k, k+5)]
                         
                         #fixes relative closeness between 0 and 1
-                        relCloseness = abs(yAct/ yPred)
+                        relCloseness = [abs(yAct[i]/ yPred[i]) for i in range(5)]
                         for element in relCloseness:
-                            if not (-1 < element and element < 1):
+                            if (element > 1):
                                 element = 1 / element
                         score.append(relCloseness)
 
