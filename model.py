@@ -13,6 +13,8 @@ class Model(torch.nn.Module):
             nn.ReLU(),
             nn.Linear(20, 20),
             nn.ReLU(),
+            nn.Linear(20, 20),
+            nn.ReLU(),
             nn.Linear(20, 5)
         ]
 

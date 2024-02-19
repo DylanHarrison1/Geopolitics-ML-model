@@ -91,14 +91,14 @@ class Instance():
                         
                         #fixes relative closeness between 0 and 1
                         relCloseness = [abs(yAct[i]/ yPred[i]) for i in range(5)]
-                        for element in relCloseness:
-                            if (element > 1):
-                                element = 1 / element
+                        for i in range(5):
+                            if (relCloseness[i] > 1):
+                                relCloseness[i] = 1 / relCloseness[i]
                         score.append(relCloseness)
 
                 else:
                     
-
+                    #Main training
                     for k in range(x.shape[1] - 5):
                         yPred = self._instance.calc(x.iloc[:,k])
                         loss, gradient = self._instance.train(yPred, y[0, range(k, k+5)]) 
@@ -117,6 +117,7 @@ class Instance():
                         total[j] += i[j]
                 total = [i / len(score) for i in total] 
                 print(total) 
+                print(score)
 
 
     def __PrintGraph(self):
