@@ -4,9 +4,11 @@ import os
 import numpy as np
 from preprocessing import RemoveColumns
 import matplotlib.pyplot as plt
+import torch
 
 class Instance():
-    def __init__(self, feedback):
+
+    def __init__(self, feedback, graph):
         """
         Input:
         feedback data, do we want feedback, Binary - 
@@ -15,6 +17,7 @@ class Instance():
         
         """
         self._feedback = feedback
+        self.graph = graph
         self._instance = Model(5)
         self._lossData = []
 
@@ -48,7 +51,7 @@ class Instance():
             LDI.drop(LDI.columns[range(1,81)], axis=1, inplace=True)
             HDI.drop(HDI.columns[range(1,81)], axis=1, inplace=True)
 
-            self.__CountryLoop(Demog, LDI, HDI, False)
+            discardreturn = self.__CountryLoop(Demog, LDI, HDI, False)
     
         #Saves model for further testing
         parameters = []
@@ -58,10 +61,12 @@ class Instance():
         df = pd.DataFrame(parameters)
         df.to_csv('model_parameters.csv', index=False)
 
-        self.__TestModel(Demog, LDI, HDI)
-        self.__PrintGraph()
-        
-                    
+        score = self.__TestModel(Demog, LDI, HDI)
+
+        if self.graph:
+            self.__PrintGraph()  
+
+        return score        
 
     def __CountryLoop(self, Demog, LDI, HDI, Testing):
         
@@ -101,6 +106,8 @@ class Instance():
                     #Main training
                     for k in range(x.shape[1] - 5):
                         yPred = self._instance.calc(x.iloc[:,k])
+                        yPred = self.__AddGaussianNoise(yPred)
+
                         loss, gradient = self._instance.train(yPred, y[0, range(k, k+5)]) 
                         lossMean += loss
 
@@ -116,9 +123,9 @@ class Instance():
                     for j in range(len(total)):
                         total[j] += i[j]
                 total = [i / len(score) for i in total] 
-                print(total) 
-                print(score)
-
+                return total
+            
+            return None
 
     def __PrintGraph(self):
         data = [i.detach().numpy() for i in self._lossData]
@@ -132,7 +139,7 @@ class Instance():
         #Stop outliers from distorting the graph
         plt.ylim(min(data), max(data) * 0.5)
         
-        plt.xlabel('Time (51 units=1 epoch)')
+        plt.xlabel('Training Progress (1 unit=1 country) (51 units=1 epoch)')
         plt.ylabel('Average Loss')
         plt.title('Loss over Time')
 
@@ -141,7 +148,7 @@ class Instance():
         plt.show()
 
     def __TestModel(self, Demog, LDI, HDI):
-        self.__CountryLoop(Demog, LDI, HDI, True)
+        return self.__CountryLoop(Demog, LDI, HDI, True)
 
     def __PrintProgress(self, j, lossMean, gradient):
         print(j/99)
@@ -149,4 +156,8 @@ class Instance():
         print(lossMean)
         #print("~~~~~latest gradient~~~~~")
         #print(gradient[0])
+    
+    def __AddGaussianNoise(self, data, mean=0, std=0.1):
+        noise = torch.randn(data.size()) * std + mean
+        return data + noise
     
