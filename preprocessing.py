@@ -9,7 +9,7 @@ import numpy as np
 # - 
 # - Create dataset per country with inputs and outputs over time.
     
-def AddEmptyColumns(file, interpolate):
+def AddEmptyColumns(file: str, interpolate: bool) -> None:
     '''
     Designed for DB's ordered by year. 
     If some years are missing, it will add them in with 
