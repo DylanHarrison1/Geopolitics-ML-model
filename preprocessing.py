@@ -8,6 +8,7 @@ import numpy as np
 # - 
 # - 
 # - Create dataset per country with inputs and outputs over time.
+print("Check 0")
 
 def ReadDF(path: str) -> pd.DataFrame:
     """
@@ -156,7 +157,7 @@ def InterpolateRows(path: str):
 
 def ReorderV(path):
     df = ReadDF(path)
-
+    print("check 2")
 
     newdf = df.unstack(-1)
     newdf.to_csv(os.getcwd() + "\test.csv", index=False)
@@ -198,4 +199,5 @@ Code used to run functions
 #OrderCSVRows('\data\\processed\Demographics.csv', [0, 1, 2, 4, 3])
 #AddEmptyColumns('\data\\raw\Liberal Democracy Index.csv', True)
 
-ReorderV('\data\\raw\V-Party\V-Dem-CPD-Party-V2.csv')
+print("Check 1")
+#ReorderV('\data\\raw\V-Party\V-Dem-CPD-Party-V2.csv')
