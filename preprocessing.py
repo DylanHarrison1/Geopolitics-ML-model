@@ -8,7 +8,16 @@ import numpy as np
 # - 
 # - 
 # - Create dataset per country with inputs and outputs over time.
+
+def ReadDF(path: str) -> pd.DataFrame:
+    """
+    Locates dataframe in local files and returns.
+    """
     
+    path = os.getcwd() + path
+    df = pd.read_csv(path)
+    return df
+
 def AddEmptyColumns(file: str, interpolate: bool) -> None:
     '''
     Designed for DB's ordered by year. 
@@ -44,7 +53,7 @@ def AddEmptyColumns(file: str, interpolate: bool) -> None:
     df = OrderByDate(df)
     df.to_csv(filename, index=False)
 
-def InterpolateColumn(df, year1, year2, newYear):
+def InterpolateColumn(df: pd.DataFrame, year1: int, year2: int, newYear: int) -> pd.DataFrame:
     '''
     Interpolates across years to estimate missing values
     '''
@@ -138,9 +147,19 @@ def OrderCSVRows(path, columnNumbers):
     
     sorted_df.to_csv(path, index=False)
 
-def RotateTable(path):
-    path = os.getcwd() + path
-    df = pd.read_csv(path)
+def InterpolateRows(path: str):
+    """
+    Designed to work on the V-Dem and V-Party datasets
+    """
+    df = ReadDF(path)
+
+
+def ReorderV(path):
+    df = ReadDF(path)
+
+
+    newdf = df.unstack(-1)
+    newdf.to_csv(os.getcwd() + "\test.csv", index=False)
 
     #while (True):
     #    workingdf = df.get_group()
@@ -178,3 +197,5 @@ Code used to run functions
 #AddEmptyColumns('\data\\raw\HDI (1870-2020).csv', True)
 #OrderCSVRows('\data\\processed\Demographics.csv', [0, 1, 2, 4, 3])
 #AddEmptyColumns('\data\\raw\Liberal Democracy Index.csv', True)
+
+ReorderV('\data\\raw\V-Party\V-Dem-CPD-Party-V2.csv')
