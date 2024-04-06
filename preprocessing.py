@@ -138,6 +138,25 @@ def OrderCSVRows(path, columnNumbers):
     
     sorted_df.to_csv(path, index=False)
 
+def RotateTable(path):
+    path = os.getcwd() + path
+    df = pd.read_csv(path)
+
+    #while (True):
+    #    workingdf = df.get_group()
+    
+    
+    #newdf = 
+
+
+    # Get rows for one country
+    # Rotate on axis, set dates to new column headings
+    # Append Country name to left
+    # Add to new table.
+    #
+    # The big issue is that the dates are not the same for every country (fill in before hand?)
+
+
 
 '''
 Code used to run functions
