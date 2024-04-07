@@ -8,7 +8,7 @@ import numpy as np
 # - 
 # - 
 # - Create dataset per country with inputs and outputs over time.
-print("Check 0")
+
 
 def ReadDF(path: str) -> pd.DataFrame:
     """
@@ -157,10 +157,17 @@ def InterpolateRows(path: str):
 
 def ReorderV(path):
     df = ReadDF(path)
-    print("check 2")
 
-    newdf = df.unstack(-1)
-    newdf.to_csv(os.getcwd() + "\test.csv", index=False)
+    """
+    pd.pivot_table(df, values = ['histname','v2x_polyarchy','v2x_polyarchy_sd',
+                                 'v2x_libdem','v2x_libdem_sd','v2x_partipdem',
+                                 'v2x_partipdem_sd','v2x_delibdem','v2x_delibdem_sd',
+                                 'v2x_egaldem','v2x_egaldem_sd']
+                                 , index=['country_name'], columns = 'year').reset_index()
+    """
+
+    df = df.unstack('year')
+    df.to_csv(os.getcwd() + "\\test.csv", index=False)
 
     #while (True):
     #    workingdf = df.get_group()
@@ -199,5 +206,5 @@ Code used to run functions
 #OrderCSVRows('\data\\processed\Demographics.csv', [0, 1, 2, 4, 3])
 #AddEmptyColumns('\data\\raw\Liberal Democracy Index.csv', True)
 
-print("Check 1")
-#ReorderV('\data\\raw\V-Party\V-Dem-CPD-Party-V2.csv')
+
+ReorderV('\data\\raw\V-Dem\V-Dem Core High Level Indices.csv')
