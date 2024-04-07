@@ -154,6 +154,43 @@ def InterpolateRows(path: str):
     """
     df = ReadDF(path)
 
+def CreateTemplateV(path: str) -> None:
+    """
+    Works, creates a table as template for filling for V-Dem.
+    """
+    olddf = ReadDF(path)
+
+    countries = olddf['country_name'].unique()
+    years = olddf['year'].unique()
+    measures = olddf.columns[2:]
+
+    
+    finc = [country for country in countries for i in range(len(measures))]
+
+    finm = [measure for i in range(len(countries)) for measure in measures ]
+    
+    years = [str(i) for i in years]
+
+    years = ['country_name','indices'] + years
+
+    
+    df = pd.DataFrame(columns=years)
+    df['country_name'] = finc
+    df['indices'] = finm
+    df.to_csv(os.getcwd() + "\\test.csv", index=False)
+
+def FillV(oldpath: str, newpath: str) -> None:
+    olddf = ReadDF(oldpath)
+    df = ReadDF(newpath)
+    for i in range(3, 13):
+        for j in range(1, 27736):
+            #Finds equivilant cell in new df, using country, index, and year
+            target = df.loc[df['country_name'] == olddf.iloc[0,j] and df['indices'] == olddf.columns[i], olddf.iloc[1,j]].values[0]
+            target = olddf.iloc[i,j]
+
+    df.to_csv(os.getcwd() + "\\test2.csv", index=False)
+
+
 
 def ReorderV(path):
     df = ReadDF(path)
@@ -163,10 +200,17 @@ def ReorderV(path):
                                  'v2x_libdem','v2x_libdem_sd','v2x_partipdem',
                                  'v2x_partipdem_sd','v2x_delibdem','v2x_delibdem_sd',
                                  'v2x_egaldem','v2x_egaldem_sd']
-                                 , index=['country_name'], columns = 'year').reset_index()
-    """
+                                 , index='country_name', columns = 'year').reset_index()
+    
 
-    df = df.unstack('year')
+    melted_df = df.melt(id_vars=df.columns[0], value_vars=df.columns[1:])
+    pivoted_df = melted_df.pivot_table(index=melted_df.columns[0], columns='year', values=['histname','v2x_polyarchy','v2x_polyarchy_sd',
+                                 'v2x_libdem','v2x_libdem_sd','v2x_partipdem',
+                                 'v2x_partipdem_sd','v2x_delibdem','v2x_delibdem_sd',
+                                 'v2x_egaldem','v2x_egaldem_sd'])
+    final_df = pivoted_df.reset_index()
+    """
+    #df = df.unstack('year')
     df.to_csv(os.getcwd() + "\\test.csv", index=False)
 
     #while (True):
@@ -207,4 +251,4 @@ Code used to run functions
 #AddEmptyColumns('\data\\raw\Liberal Democracy Index.csv', True)
 
 
-ReorderV('\data\\raw\V-Dem\V-Dem Core High Level Indices.csv')
+FillV('\data\\raw\V-Dem\V-Dem Core High Level Indices.csv', '\test.csv')
