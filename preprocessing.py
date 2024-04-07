@@ -182,12 +182,19 @@ def CreateTemplateV(path: str) -> None:
 def FillV(oldpath: str, newpath: str) -> None:
     olddf = ReadDF(oldpath)
     df = ReadDF(newpath)
-    for i in range(3, 13):
-        for j in range(1, 27736):
-            #Finds equivilant cell in new df, using country, index, and year
-            target = df.loc[df['country_name'] == olddf.iloc[0,j] and df['indices'] == olddf.columns[i], olddf.iloc[1,j]].values[0]
-            target = olddf.iloc[i,j]
+    #27734
+    for j in range(1, 27734):
+        #Finds equivilant cell in new df, using country, index, and year
+        #targets = df.loc[df['country_name'] == olddf.iloc[(j,0)] , str(olddf.iloc[(j,1)])]
+        
+        row = df.index[df['country_name'] == olddf.iloc[(j,0)]]
+        column = str(olddf.iloc[(j,1)])
 
+        #print(targets)
+        for k in range(len(row)):
+            df.loc[row[k], column] = olddf.iloc[(j, k + 2)]
+            
+            #and df['indices'] == olddf.columns[i]
     df.to_csv(os.getcwd() + "\\test2.csv", index=False)
 
 
@@ -251,4 +258,4 @@ Code used to run functions
 #AddEmptyColumns('\data\\raw\Liberal Democracy Index.csv', True)
 
 
-FillV('\data\\raw\V-Dem\V-Dem Core High Level Indices.csv', '\test.csv')
+FillV('\data\\raw\V-Dem\V-Dem Core High Level Indices.csv', '\\test.csv')
