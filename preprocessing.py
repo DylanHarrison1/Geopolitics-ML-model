@@ -154,7 +154,7 @@ def InterpolateRows(path: str):
     """
     df = ReadDF(path)
 
-def CreateTemplateV(path: str) -> None:
+def TemplateVDem(path: str) -> None:
     """
     Works, creates a table as template for filling for V-Dem.
     """
@@ -178,6 +178,32 @@ def CreateTemplateV(path: str) -> None:
     df['country_name'] = finc
     df['indices'] = finm
     df.to_csv(os.getcwd() + "\\test.csv", index=False)
+
+def TemplateVParty(path: str) -> None:
+    olddf = ReadDF(path)
+
+    countries = olddf['country_name'].unique()
+    years = olddf['year'].unique()
+    x = np.array(olddf[['v2paenname','country_name']], dtype=str)
+    parties = np.unique(x, axis=0)
+    #print(parties)
+
+    measures = olddf.columns[3:]
+
+    
+    finp = [party for party in parties for i in range(len(measures))]
+    finm = [measure for i in range(len(countries)) for measure in measures ]
+    years = [str(i) for i in years]
+
+
+    years = ['country_name','v2paenname','indices'] + years
+
+    
+    df = pd.DataFrame(columns=years)
+    df['country_name','v2paenname'] = finp
+    df['indices'] = finm
+    df.to_csv(os.getcwd() + "\\test.csv", index=False)
+
 
 def FillV(oldpath: str, newpath: str) -> None:
     olddf = ReadDF(oldpath)
@@ -258,4 +284,6 @@ Code used to run functions
 #AddEmptyColumns('\data\\raw\Liberal Democracy Index.csv', True)
 
 
-FillV('\data\\raw\V-Dem\V-Dem Core High Level Indices.csv', '\\test.csv')
+#FillV('\data\\raw\V-Dem\V-Dem Core High Level Indices.csv', '\\test.csv')
+
+TemplateVParty('\data\\raw\V-Dem-CPD-Party-V2.csv')
