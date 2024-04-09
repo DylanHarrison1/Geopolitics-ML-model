@@ -183,24 +183,24 @@ def TemplateVParty(path: str) -> None:
     olddf = ReadDF(path)
 
     countries = olddf['country_name'].unique()
-    years = olddf['year'].unique()
-    x = np.array(olddf[['v2paenname','country_name']], dtype=str)
+    years = range(1900, 2024)
+    x = np.array(olddf[['country_name','v2paenname']], dtype=str)
+    #x = list(olddf[['v2paenname','country_name']])
     parties = np.unique(x, axis=0)
-    #print(parties)
-
+    #print(parties[:,0])
     measures = olddf.columns[3:]
-
+    
     
     finp = [party for party in parties for i in range(len(measures))]
-    finm = [measure for i in range(len(countries)) for measure in measures ]
+    finm = [measure for i in range(len(parties)) for measure in measures ]
     years = [str(i) for i in years]
-
 
     years = ['country_name','v2paenname','indices'] + years
 
     
     df = pd.DataFrame(columns=years)
-    df['country_name','v2paenname'] = finp
+    df['country_name'] = [i[0] for i in finp]
+    df['v2paenname'] = [i[1] for i in finp]
     df['indices'] = finm
     df.to_csv(os.getcwd() + "\\test.csv", index=False)
 
