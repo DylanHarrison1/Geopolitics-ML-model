@@ -205,10 +205,10 @@ def TemplateVParty(path: str) -> None:
     df.to_csv(os.getcwd() + "\\test.csv", index=False)
 
 
-def FillV(oldpath: str, newpath: str) -> None:
+def FillVDem(oldpath: str, newpath: str) -> None:
     olddf = ReadDF(oldpath)
     df = ReadDF(newpath)
-    #27734
+    #27734 vdem
     for j in range(1, 27734):
         #Finds equivilant cell in new df, using country, index, and year
         #targets = df.loc[df['country_name'] == olddf.iloc[(j,0)] , str(olddf.iloc[(j,1)])]
@@ -223,42 +223,29 @@ def FillV(oldpath: str, newpath: str) -> None:
             #and df['indices'] == olddf.columns[i]
     df.to_csv(os.getcwd() + "\\test2.csv", index=False)
 
+def FillVParty(oldpath: str, newpath: str) -> None:
 
+    olddf = ReadDF(oldpath)
+    df = ReadDF(newpath)
+    #11899 vparty
+    for j in range(1, 11898):
+        #Finds equivilant cell in new df, using country, index, and year
+        #targets = df.loc[df['country_name'] == olddf.iloc[(j,0)] , str(olddf.iloc[(j,1)])]
+        
+        row1 = df.index[df['country_name'] == olddf.iloc[(j,1)]]
+        row2 = df.index[df['v2paenname'] == olddf.iloc[(j,0)]]
+        row = [i for i in row1 if i in row2]
 
-def ReorderV(path):
-    df = ReadDF(path)
+        
+        column = str(olddf.iloc[(j,2)])
 
-    """
-    pd.pivot_table(df, values = ['histname','v2x_polyarchy','v2x_polyarchy_sd',
-                                 'v2x_libdem','v2x_libdem_sd','v2x_partipdem',
-                                 'v2x_partipdem_sd','v2x_delibdem','v2x_delibdem_sd',
-                                 'v2x_egaldem','v2x_egaldem_sd']
-                                 , index='country_name', columns = 'year').reset_index()
-    
+        #print(targets)
+        for k in range(len(row)):
+            df.loc[row[k], column] = olddf.iloc[(j, k + 3)]
+            
+            #and df['indices'] == olddf.columns[i]
+    df.to_csv(os.getcwd() + "\\test2.csv", index=False)
 
-    melted_df = df.melt(id_vars=df.columns[0], value_vars=df.columns[1:])
-    pivoted_df = melted_df.pivot_table(index=melted_df.columns[0], columns='year', values=['histname','v2x_polyarchy','v2x_polyarchy_sd',
-                                 'v2x_libdem','v2x_libdem_sd','v2x_partipdem',
-                                 'v2x_partipdem_sd','v2x_delibdem','v2x_delibdem_sd',
-                                 'v2x_egaldem','v2x_egaldem_sd'])
-    final_df = pivoted_df.reset_index()
-    """
-    #df = df.unstack('year')
-    df.to_csv(os.getcwd() + "\\test.csv", index=False)
-
-    #while (True):
-    #    workingdf = df.get_group()
-    
-    
-    #newdf = 
-
-
-    # Get rows for one country
-    # Rotate on axis, set dates to new column headings
-    # Append Country name to left
-    # Add to new table.
-    #
-    # The big issue is that the dates are not the same for every country (fill in before hand?)
 
 
 
@@ -286,4 +273,6 @@ Code used to run functions
 
 #FillV('\data\\raw\V-Dem\V-Dem Core High Level Indices.csv', '\\test.csv')
 
-TemplateVParty('\data\\raw\V-Dem-CPD-Party-V2.csv')
+#TemplateVParty('\data\\raw\V-Dem-CPD-Party-V2.csv')
+
+FillVParty('\data\\raw\V-Dem-CPD-Party-V2.csv','\\test.csv')
