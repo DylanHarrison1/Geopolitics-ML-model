@@ -148,11 +148,6 @@ def OrderCSVRows(path, columnNumbers):
     
     sorted_df.to_csv(path, index=False)
 
-def InterpolateRows(path: str):
-    """
-    Designed to work on the V-Dem and V-Party datasets
-    """
-    df = ReadDF(path)
 
 def TemplateVDem(path: str) -> None:
     """
