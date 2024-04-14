@@ -9,7 +9,7 @@ import torch
 
 class Instance():
 
-    def __init__(self, modelType: str, modelStructure: list, datasets: list, indices: list, combMethod: list, feedback: bool, graph: bool) -> object:
+    def __init__(self, modelType: str, modelStructure: list, datasets: list, indices: list, combMethod: str, feedback: bool, graph: bool) -> object:
         """
         modelType, modelStructure- inputs for model[__]
         datasets- list of datasets used to train[__]
@@ -23,11 +23,26 @@ class Instance():
         self._instance = Model(modelType, modelStructure)
         self._lossData = []
 
+        #Gets the subset of meta with just these datasets
+        meta = ReadDF("\data\processed\meta.csv")#probably incorrect address
+        meta = meta[meta['DBName'].isin(datasets)]
+
         #Puts all data in the data list
-        meta = ReadDF("\data\processed\meta.csv")
         data = []
         for item in datasets:
             data.append(ReadDF(meta.loc[item].iloc[1]))
+
+        #Fits the datasets to each other
+        if (combMethod == "slice"):
+            top = meta["YrEnd"].min()
+            bottom = meta["YrStart"].max()
+            for df in data:
+
+                colList = [int(col) for col in df.columns if col.isdigit()]
+                toKeep = [col for col in colList if bottom <= col <= top]
+
+                toDrop = set(colList) - set(toKeep)
+                df.drop(columns= toDrop, inplace= True)
 
 
     def __DemogToHDI_LDI(self, df, key):
