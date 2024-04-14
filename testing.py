@@ -15,3 +15,11 @@ for i in range(5):
         mean[i] += score[j, i]
     mean[i] = mean[i] / 10
 print(mean)
+
+test2 = Instance("basic", 
+                 [4,10.10,5],
+                 ["Demographics", "HDI", "Natural Resource Rent"],
+                 [[97,98,99],[],[]],
+                 "slice",
+                 False,
+                 True)
