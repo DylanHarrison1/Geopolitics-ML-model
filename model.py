@@ -6,6 +6,11 @@ import pandas as pd
 
 class Model(torch.nn.Module):
     def __init__(self, modelType: str, structure: list) -> None:
+        """
+        modelType- basic, 
+        structure- list of ints denoting size of each layer
+        """
+
         super(Model, self).__init__()
 
         if modelType == "basic":

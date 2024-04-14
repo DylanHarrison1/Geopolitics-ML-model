@@ -3,23 +3,32 @@ import pandas as pd
 import os
 import numpy as np
 from preprocessing import RemoveColumns
+from preprocessing import ReadDF
 import matplotlib.pyplot as plt
 import torch
 
 class Instance():
 
-    def __init__(self, feedback, graph):
+    def __init__(self, modelType: str, modelStructure: list, datasets: list, indices: list, combMethod: list, feedback: bool, graph: bool) -> object:
         """
-        Input:
-        feedback data, do we want feedback, Binary - 
-        Model Details, Int - 
-        dbList, list of data used - 
-        
+        modelType, modelStructure- inputs for model[__]
+        datasets- list of datasets used to train[__]
+        indices- which indices are we using from each dataset[__]
+        combMethod- how are we combining datasets? extrapolate, min, train[__]
+        feedback- do we want feedback? [__]
+        graph- Dd we want to graph the result?
         """
         self._feedback = feedback
         self.graph = graph
-        self._instance = Model(5)
+        self._instance = Model(modelType, modelStructure)
         self._lossData = []
+
+        #Puts all data in the data list
+        meta = ReadDF("\data\processed\meta.csv")
+        data = []
+        for item in datasets:
+            data.append(ReadDF(meta.loc[item].iloc[1]))
+
 
     def __DemogToHDI_LDI(self, df, key):
         '''
