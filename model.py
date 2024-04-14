@@ -5,22 +5,21 @@ import pandas as pd
 
 
 class Model(torch.nn.Module):
-    def __init__(self, inputDims) -> None:
+    def __init__(self, modelType: str, structure: list) -> None:
         super(Model, self).__init__()
 
-        layers = [
-            nn.Linear(inputDims, 20),
-            nn.ReLU(),
-            nn.Linear(20, 20),
-            nn.ReLU(),
-            nn.Linear(20, 20),
-            nn.ReLU(),
-            nn.Linear(20, 5)
-        ]
+        if modelType == "basic":
+            layers = []
+            
+            for i in range(len(structure) - 1):
+                layers.append(nn.Linear(structure[i], structure[i + 1]))
+                layers.append(nn.ReLU())
+            layers.pop() #Remove excess RELU
+            
 
-        self.NN = torch.nn.Sequential(*layers)
-        
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
+            self.NN = torch.nn.Sequential(*layers)
+            
+            self.optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
 
         self.__initialize_weights()
 
