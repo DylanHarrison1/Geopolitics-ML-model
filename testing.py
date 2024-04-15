@@ -16,6 +16,7 @@ for i in range(5):
     mean[i] = mean[i] / 10
 print(mean)
 
+
 test2 = Instance("basic", 
                  [4,10.10,5],
                  ["HDI", "Demographics", "Natural Resource Rent"],
@@ -23,3 +24,5 @@ test2 = Instance("basic",
                  "slice",
                  False,
                  True)
+test2.Run(10)
+score = test2.TestModel()

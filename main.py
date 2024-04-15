@@ -75,7 +75,7 @@ class Instance():
         """
 
         for i in range(epochs):
-            discardreturn = self.__CountryLoop()
+            self.__CountryLoop()
     
         #Saves model for further testing
         parameters = []
@@ -85,20 +85,18 @@ class Instance():
         df = pd.DataFrame(parameters)
         df.to_csv('model_parameters.csv', index=False)
 
-        score = self.__TestModel(Demog, LDI, HDI)
-
         if self.graph:
             self.__PrintGraph()  
 
-        return score        
+            
 
     def __CountryLoop(self):
-        predTime = self._modelStructure[-1]
+        predYears = self._modelStructure[-1] #output size
         lossmean = 0
 
 
         for i in range(self.data[0].shape[0]): #Loop through all countries
-            for j in range(self.data[0].shape[1] - predTime): #Loop through all years - predictions
+            for j in range(self.data[0].shape[1] - (predYears * 2)): #Loop through years minus test set
                 
                 x = []
                 for k in range(1, len(self.data)):
@@ -106,7 +104,7 @@ class Instance():
 
                 yPred = self._instance.calc(x)
                 yPred = self.__AddGaussianNoise(yPred)
-                yAct = self.data[0][i, range(j, j + predTime)]
+                yAct = self.data[0][i, range(j, j + predYears)]
 
                 
                 loss, gradient = self._instance.train(yPred, yAct) 
@@ -197,8 +195,34 @@ class Instance():
         plt.grid(True)
         plt.show()
 
-    def __TestModel(self, Demog, LDI, HDI):
-        return self.__CountryLoop(Demog, LDI, HDI, True)
+    def TestModel(self):
+        predYears = self._modelStructure[-1] #output size
+        score = []
+        
+        for i in range(self.data[0].shape[0]): #Loop through all countries
+            for j in range(self.data[0].shape[1] - (predYears * 2), self.data[0].shape[1] - predYears): #last years
+                
+                x = []
+                for k in range(1, len(self.data)):
+                    x.append(self.data[k][i,j])#incorrect access?
+
+                yPred = self._instance.calc(x)
+
+                yAct = self.data[0][i, range(j, j + predYears)]
+
+
+                relCloseness = [abs(yAct[i]/ yPred[i]) for i in range(5)]
+                for i in range(5):
+                    if (relCloseness[i] > 1):
+                        relCloseness[i] = 1 / relCloseness[i]
+                score.append(relCloseness)
+        
+        total = [0] * predYears
+        for i in score:
+            for j in range(len(total)):
+                total[j] += i[j]
+        total = [i / len(score) for i in total] 
+        return total
 
     def __PrintProgress(self, j, lossMean, gradient):
         print(j/99)
