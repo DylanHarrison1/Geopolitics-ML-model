@@ -270,4 +270,4 @@ Code used to run functions
 
 #TemplateVParty('\data\\raw\V-Dem-CPD-Party-V2.csv')
 
-FillVParty('\data\\raw\V-Dem-CPD-Party-V2.csv','\\test.csv')
+#FillVParty('\data\\raw\V-Dem-CPD-Party-V2.csv','\\test.csv')
