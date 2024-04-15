@@ -2,6 +2,7 @@ DBName,FilePath,ColumnStart,YrStart,YrEnd,Indices
 HDI,\data\\processed\HDI (1870-2020).csv,1,1870,2020,1
 Demographics,\data\\processed\Demographics.csv,7,1950,2022,99
 Natural Resource Rent,\data\\processed\Natural Resource Rent.csv,1,1960,2022,1
+Test,\data\\processed\test.csv,1,1980,1999,1
 V-Dem,\data\\processed\V-Dem.csv,2,1789,2023,11
 V-Party,\data\\processed\V-Party.csv,3,1900,2023,26
 ,\data\\processed\,,,,

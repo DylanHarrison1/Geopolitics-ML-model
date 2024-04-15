@@ -27,7 +27,9 @@ class Instance():
         self._indices = indices
 
         #Gets the subset of meta with just these datasets
-        meta = ReadDF("\data\processed\meta.csv")#probably incorrect address
+        self._meta = ReadDF("\data\\processed\meta.csv")#probably incorrect address
+        meta = self._meta
+
         meta = meta[meta['DBName'].isin(datasets)]
 
         #Puts all data in the data list
@@ -98,10 +100,7 @@ class Instance():
         for i in range(self.data[0].shape[0]): #Loop through all countries
             for j in range(self.data[0].shape[1] - (predYears * 2)): #Loop through years minus test set
                 
-                x = []
-                for k in range(1, len(self.data)):
-                    x.append(self.data[k][i,j])#incorrect access?
-
+                x = self.__GetX(i, j)
                 yPred = self._instance.calc(x)
                 yPred = self.__AddGaussianNoise(yPred)
                 yAct = self.data[0][i, range(j, j + predYears)]
@@ -202,12 +201,10 @@ class Instance():
         for i in range(self.data[0].shape[0]): #Loop through all countries
             for j in range(self.data[0].shape[1] - (predYears * 2), self.data[0].shape[1] - predYears): #last years
                 
-                x = []
-                for k in range(1, len(self.data)):
-                    x.append(self.data[k][i,j])#incorrect access?
 
+
+                x = self.__GetX(i, j)
                 yPred = self._instance.calc(x)
-
                 yAct = self.data[0][i, range(j, j + predYears)]
 
 
@@ -235,3 +232,14 @@ class Instance():
         noise = torch.randn(data.size()) * std + mean
         return data + noise
     
+    def __GetX(self, i: int, j: int) -> list:
+        """
+        Takes i (country) and j (year) and returns all of the x values from each index from each dataset
+        """
+        x = []
+        for k in range(1, len(self.data)): #Loops through datasets
+            for l in range(self._indices[k]): #Loops through indexes in datasets
+                x.append(self.data[k][self._meta[k, 5] * i  + self._indices[k][l],j])#incorrect access?
+
+        return x
+        
