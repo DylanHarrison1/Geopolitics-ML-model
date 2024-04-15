@@ -2,6 +2,18 @@ from main import Instance
 
 #In model, layer is a list. We could pass that all the way in.
 
+test0 = Instance("basic", 
+                 [4,10.10,5],
+                 ["HDI", "Test"],
+                 [[1],[1]],
+                 "slice",
+                 True,
+                 True)
+test0.Run(5)
+accuracy = test0.TestModel()
+print(accuracy)
+
+"""
 test1 = Instance(False, False)
 score = []
 for i in range(10):
@@ -26,3 +38,4 @@ test2 = Instance("basic",
                  True)
 test2.Run(10)
 score = test2.TestModel()
+"""
