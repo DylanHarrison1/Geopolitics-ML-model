@@ -3,7 +3,7 @@ from main import Instance
 #In model, layer is a list. We could pass that all the way in.
 
 test0 = Instance("basic", 
-                 [4,10.10,5],
+                 [1, 10, 10, 5],
                  ["HDI", "Test"],
                  [[1],[1]],
                  "slice",

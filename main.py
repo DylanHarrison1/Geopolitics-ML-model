@@ -27,15 +27,15 @@ class Instance():
         self._indices = indices
 
         #Gets the subset of meta with just these datasets
-        self._meta = ReadDF("\data\\processed\meta.csv")#probably incorrect address
+        self._meta = pd.read_csv(os.getcwd() + "\data\\processed\meta.csv", index_col="DBName")
         meta = self._meta
 
-        meta = meta[meta['DBName'].isin(datasets)]
+        meta = meta[meta.iloc[:,0].isin(datasets)]
 
         #Puts all data in the data list
-        self.data = []
-        for item in datasets:
-            self.data.append(ReadDF(meta.loc[item].iloc[1]))
+        self._data = []
+        for i in range(meta.shape[0]):
+            self._data.append(meta.iloc[i,1])
 
         #Fits the datasets to each other
         if (combMethod == "slice"):
@@ -43,7 +43,7 @@ class Instance():
             #Slicing years
             top = meta["YrEnd"].min()
             bottom = meta["YrStart"].max()
-            for df in self.data:
+            for df in self._data:
 
                 colList = [int(col) for col in df.columns if col.isdigit()]
                 toKeep = [col for col in colList if bottom <= col <= top]
@@ -52,10 +52,10 @@ class Instance():
                 df.drop(columns= toDrop, inplace= True)
 
             #Slicing Countries
-            commonCountries = set(self.data[0].iloc[:, 0])
-            for df in self.data:  
+            commonCountries = set(self._data[0].iloc[:, 0])
+            for df in self._data:  
                 commonCountries = commonCountries.intersection(df.iloc[:, 0])
-            for df in self.data:  
+            for df in self._data:  
                 df.drop(df[~df.iloc[:, 0].isin(commonCountries)].index, inplace=True)
 
 
@@ -97,13 +97,13 @@ class Instance():
         lossmean = 0
 
 
-        for i in range(self.data[0].shape[0]): #Loop through all countries
-            for j in range(self.data[0].shape[1] - (predYears * 2)): #Loop through years minus test set
+        for i in range(self._data[0].shape[0]): #Loop through all countries
+            for j in range(self._data[0].shape[1] - (predYears * 2)): #Loop through years minus test set
                 
                 x = self.__GetX(i, j)
                 yPred = self._instance.calc(x)
                 yPred = self.__AddGaussianNoise(yPred)
-                yAct = self.data[0][i, range(j, j + predYears)]
+                yAct = self._data[0][i, range(j, j + predYears)]
 
                 
                 loss, gradient = self._instance.train(yPred, yAct) 
@@ -198,14 +198,14 @@ class Instance():
         predYears = self._modelStructure[-1] #output size
         score = []
         
-        for i in range(self.data[0].shape[0]): #Loop through all countries
-            for j in range(self.data[0].shape[1] - (predYears * 2), self.data[0].shape[1] - predYears): #last years
+        for i in range(self._data[0].shape[0]): #Loop through all countries
+            for j in range(self._data[0].shape[1] - (predYears * 2), self._data[0].shape[1] - predYears): #last years
                 
 
 
                 x = self.__GetX(i, j)
                 yPred = self._instance.calc(x)
-                yAct = self.data[0][i, range(j, j + predYears)]
+                yAct = self._data[0][i, range(j, j + predYears)]
 
 
                 relCloseness = [abs(yAct[i]/ yPred[i]) for i in range(5)]
@@ -237,9 +237,9 @@ class Instance():
         Takes i (country) and j (year) and returns all of the x values from each index from each dataset
         """
         x = []
-        for k in range(1, len(self.data)): #Loops through datasets
+        for k in range(1, len(self._data)): #Loops through datasets
             for l in range(self._indices[k]): #Loops through indexes in datasets
-                x.append(self.data[k][self._meta[k, 5] * i  + self._indices[k][l],j])#incorrect access?
+                x.append(self._data[k][self._meta[k, 5] * i  + self._indices[k][l],j])#incorrect access?
 
         return x
         
