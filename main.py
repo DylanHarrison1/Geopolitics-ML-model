@@ -27,15 +27,18 @@ class Instance():
         self._indices = indices
 
         #Gets the subset of meta with just these datasets
-        self._meta = pd.read_csv(os.getcwd() + "\data\\processed\meta.csv", index_col="DBName")
-        meta = self._meta
+        meta = ReadDF("\data\\processed\meta.csv")
 
-        meta = meta[meta.iloc[:,0].isin(datasets)]
+        meta = meta[meta.loc["DBName"].isin(datasets)]
 
         #Puts all data in the data list
         self._data = []
+
+        print(meta)
         for i in range(meta.shape[0]):
-            self._data.append(meta.iloc[i,1])
+            self._data.append(ReadDF(meta.iloc[i,1]))
+        
+        print(len(self._data))
 
         #Fits the datasets to each other
         if (combMethod == "slice"):
@@ -58,6 +61,7 @@ class Instance():
             for df in self._data:  
                 df.drop(df[~df.iloc[:, 0].isin(commonCountries)].index, inplace=True)
 
+        self._meta = meta
 
     def __DemogToHDI_LDI(self, df, key):
         '''
