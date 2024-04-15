@@ -19,9 +19,12 @@ class Instance():
         graph- Dd we want to graph the result?
         """
         self._feedback = feedback
-        self.graph = graph
+        self._graph = graph
         self._instance = Model(modelType, modelStructure)
         self._lossData = []
+        self._modelType = modelType
+        self._modelStructure = modelStructure
+        self._indices = indices
 
         #Gets the subset of meta with just these datasets
         meta = ReadDF("\data\processed\meta.csv")#probably incorrect address
@@ -89,7 +92,33 @@ class Instance():
 
         return score        
 
-    def __CountryLoop(self, Demog, LDI, HDI, Testing):
+    def __CountryLoop(self):
+        predTime = self._modelStructure[-1]
+        lossmean = 0
+
+
+        for i in range(self.data[0].shape[0]): #Loop through all countries
+            for j in range(self.data[0].shape[1] - predTime): #Loop through all years - predictions
+                
+                x = []
+                for k in range(1, len(self.data)):
+                    x.append(self.data[k][i,j])#incorrect access?
+
+                yPred = self._instance.calc(x)
+                yPred = self.__AddGaussianNoise(yPred)
+                yAct = self.data[0][i, range(j, j + predTime)]
+
+                
+                loss, gradient = self._instance.train(yPred, yAct) 
+                lossMean += loss
+
+            
+            if self._feedback:
+                lossMean /= x.shape[1]
+                self._lossData.append(lossMean)        
+                self.__PrintProgress(j, lossMean, gradient)
+
+    def __OldCountryLoop(self, Demog, LDI, HDI, Testing):
         
             score = []
 
