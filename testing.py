@@ -18,8 +18,8 @@ print(mean)
 
 test2 = Instance("basic", 
                  [4,10.10,5],
-                 ["Demographics", "HDI", "Natural Resource Rent"],
-                 [[97,98,99],[],[]],
+                 ["HDI", "Demographics", "Natural Resource Rent"],
+                 [[], [97,98,99],[]],
                  "slice",
                  False,
                  True)

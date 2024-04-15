@@ -28,21 +28,30 @@ class Instance():
         meta = meta[meta['DBName'].isin(datasets)]
 
         #Puts all data in the data list
-        data = []
+        self.data = []
         for item in datasets:
-            data.append(ReadDF(meta.loc[item].iloc[1]))
+            self.data.append(ReadDF(meta.loc[item].iloc[1]))
 
         #Fits the datasets to each other
         if (combMethod == "slice"):
+
+            #Slicing years
             top = meta["YrEnd"].min()
             bottom = meta["YrStart"].max()
-            for df in data:
+            for df in self.data:
 
                 colList = [int(col) for col in df.columns if col.isdigit()]
                 toKeep = [col for col in colList if bottom <= col <= top]
 
                 toDrop = set(colList) - set(toKeep)
                 df.drop(columns= toDrop, inplace= True)
+
+            #Slicing Countries
+            commonCountries = set(self.data[0].iloc[:, 0])
+            for df in self.data:  
+                commonCountries = commonCountries.intersection(df.iloc[:, 0])
+            for df in self.data:  
+                df.drop(df[~df.iloc[:, 0].isin(commonCountries)].index, inplace=True)
 
 
     def __DemogToHDI_LDI(self, df, key):
@@ -61,21 +70,9 @@ class Instance():
         epochs, Int - 
 
         """
-        
 
         for i in range(epochs):
-            #Open relevant csv files here
-            Demog = pd.read_csv(os.getcwd() + '\data\\processed\Demographics.csv')
-            LDI = pd.read_csv(os.getcwd() + '\data\\processed\HDI (1870-2020).csv')
-            HDI = pd.read_csv(os.getcwd() + '\data\\processed\Liberal Democracy Index.csv')
-            
-            #loses unecesary years
-            Demog.drop(Demog.columns[range(73, 80)], axis=1, inplace=True)
-            LDI.drop(LDI.columns[range(147, 152)], axis=1, inplace=True)
-            LDI.drop(LDI.columns[range(1,81)], axis=1, inplace=True)
-            HDI.drop(HDI.columns[range(1,81)], axis=1, inplace=True)
-
-            discardreturn = self.__CountryLoop(Demog, LDI, HDI, False)
+            discardreturn = self.__CountryLoop()
     
         #Saves model for further testing
         parameters = []
