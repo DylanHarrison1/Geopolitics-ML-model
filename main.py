@@ -103,7 +103,7 @@ class Instance():
 
     def __CountryLoop(self):
         predYears = self._modelStructure[-1] #output size
-        lossmean = 0
+        lossMean = 0
 
 
         for i in range(self._data[0].shape[0]): #Loop through all countries
@@ -113,7 +113,7 @@ class Instance():
 
                 yPred = self._instance.calc(x)
                 yPred = self.__AddGaussianNoise(yPred)
-                yAct = self._data[0][i, range(j, j + predYears)]
+                yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
                 
                 loss, gradient = self._instance.train(yPred, yAct) 
