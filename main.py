@@ -72,6 +72,8 @@ class Instance():
         else:
             return None
 
+
+
     def Run(self, epochs):
         """
         Input:
@@ -91,9 +93,7 @@ class Instance():
         df.to_csv('model_parameters.csv', index=False)
 
         if self.graph:
-            self.__PrintGraph()  
-
-            
+            self.__PrintGraph()           
 
     def __CountryLoop(self):
         predYears = self._modelStructure[-1] #output size
@@ -241,8 +241,8 @@ class Instance():
         """
         x = []
         for k in range(1, len(self._data)): #Loops through datasets
-            for l in range(self._indices[k]): #Loops through indexes in datasets
-                x.append(self._data[k][self._meta[k, 5] * i  + self._indices[k][l],j])#incorrect access?
-
+            for l in range(len(self._indices[k])): #Loops through indexes in datasets
+                x.append(self._data[k].iloc[int(self._meta.iloc[k, 5]) * i  + self._indices[k][l],j])#incorrect access?
+                #                           num of indexes * country number + which index
         return x
         
