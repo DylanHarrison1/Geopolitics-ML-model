@@ -29,30 +29,28 @@ class Instance():
         #Gets the subset of meta with just these datasets
         meta = ReadDF("\data\\processed\meta.csv")
 
-        print(meta) 
         meta = meta[meta.loc[:, "DBName"].isin(datasets)]
 
         #Puts all data in the data list
         self._data = []
 
-        print(meta)
         for i in range(meta.shape[0]):
             self._data.append(ReadDF(meta.iloc[i,1]))
-        
-        print(len(self._data))
 
         #Fits the datasets to each other
         if (combMethod == "slice"):
 
             #Slicing years
-            top = meta["YrEnd"].min()
-            bottom = meta["YrStart"].max()
+            top = int(meta["YrEnd"].min())
+            bottom = int(meta["YrStart"].max())
             for df in self._data:
 
                 colList = [int(col) for col in df.columns if col.isdigit()]
                 toKeep = [col for col in colList if bottom <= col <= top]
 
                 toDrop = set(colList) - set(toKeep)
+                toDrop = [str(col) for col in toDrop]
+
                 df.drop(columns= toDrop, inplace= True)
 
             #Slicing Countries
