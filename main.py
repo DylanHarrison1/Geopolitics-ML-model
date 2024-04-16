@@ -60,6 +60,12 @@ class Instance():
             for df in self._data:  
                 df.drop(df[~df.iloc[:, 0].isin(commonCountries)].index, inplace=True)
 
+
+        #Loses index names, only a hindrance now
+        for i in range(len(self._data)):
+            columns = range(int(meta.iloc[i, 2]))
+            self._data[i].drop(self._data[i].columns[columns], axis=1, inplace=True)
+
         self._meta = meta
 
     def __DemogToHDI_LDI(self, df, key):
@@ -101,9 +107,10 @@ class Instance():
 
 
         for i in range(self._data[0].shape[0]): #Loop through all countries
-            for j in range(self._data[0].shape[1] - (predYears * 2)): #Loop through years minus test set
+            for j in range(self._data[0].shape[1] - (predYears * 2)): #Loops to year end minus test set
                 
                 x = self.__GetX(i, j)
+
                 yPred = self._instance.calc(x)
                 yPred = self.__AddGaussianNoise(yPred)
                 yAct = self._data[0][i, range(j, j + predYears)]
@@ -242,7 +249,8 @@ class Instance():
         x = []
         for k in range(1, len(self._data)): #Loops through datasets
             for l in range(len(self._indices[k])): #Loops through indexes in datasets
-                x.append(self._data[k].iloc[int(self._meta.iloc[k, 5]) * i  + self._indices[k][l],j])#incorrect access?
+                value = self._data[k].iloc[int(self._meta.iloc[k, 5]) * i  + self._indices[k][l],j]
                 #                           num of indexes * country number + which index
+                x.append(float(value))
         return x
         
