@@ -29,7 +29,8 @@ class Instance():
         #Gets the subset of meta with just these datasets
         meta = ReadDF("\data\\processed\meta.csv")
 
-        meta = meta[meta.loc["DBName"].isin(datasets)]
+        print(meta) 
+        meta = meta[meta.loc[:, "DBName"].isin(datasets)]
 
         #Puts all data in the data list
         self._data = []
