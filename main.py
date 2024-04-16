@@ -98,7 +98,7 @@ class Instance():
         df = pd.DataFrame(parameters)
         df.to_csv('model_parameters.csv', index=False)
 
-        if self.graph:
+        if self._graph:
             self.__PrintGraph()           
 
     def __CountryLoop(self):
@@ -121,9 +121,9 @@ class Instance():
 
             
             if self._feedback:
-                lossMean /= x.shape[1]
+                lossMean /= len(x)
                 self._lossData.append(lossMean)        
-                self.__PrintProgress(j, lossMean, gradient)
+                self.__PrintProgress(i, self._data[0].shape[0], lossMean, gradient)
 
     def __OldCountryLoop(self, Demog, LDI, HDI, Testing):
         
@@ -215,7 +215,7 @@ class Instance():
 
                 x = self.__GetX(i, j)
                 yPred = self._instance.calc(x)
-                yAct = self._data[0][i, range(j, j + predYears)]
+                yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
 
                 relCloseness = [abs(yAct[i]/ yPred[i]) for i in range(5)]
@@ -231,12 +231,12 @@ class Instance():
         total = [i / len(score) for i in total] 
         return total
 
-    def __PrintProgress(self, j, lossMean, gradient):
-        print(j/99)
-        print("~~~~~loss~~~~~")
-        print(lossMean)
-        #print("~~~~~latest gradient~~~~~")
-        #print(gradient[0])
+    def __PrintProgress(self, i, countries, lossMean, gradient):
+        print("~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(str(i) + "/" + str(countries) + ". Mean Loss = " + str(lossMean))
+
+        gradmean = torch.mean(gradient[0])
+        print("Latest Gradient Mean = " + str(gradmean))
     
     def __AddGaussianNoise(self, data, mean=0, std=0.1):
         noise = torch.randn(data.size()) * std + mean
@@ -249,8 +249,8 @@ class Instance():
         x = []
         for k in range(1, len(self._data)): #Loops through datasets
             for l in range(len(self._indices[k])): #Loops through indexes in datasets
-                value = self._data[k].iloc[int(self._meta.iloc[k, 5]) * i  + self._indices[k][l],j]
-                #                           num of indexes * country number + which index
+                value = self._data[k].iloc[int(self._meta.iloc[k, 5]) * i  + (self._indices[k][l] - 1),j]
+                #                           num of indexes * country num(i) +      which index
                 x.append(float(value))
         return x
         
