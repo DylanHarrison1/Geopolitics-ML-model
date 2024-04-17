@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import numpy as np
+from scipy.spatial.distance import cdist
 #Goals:
 # - 
 # - Create A HDI file per country per year
@@ -241,8 +242,61 @@ def FillVParty(oldpath: str, newpath: str) -> None:
             #and df['indices'] == olddf.columns[i]
     df.to_csv(os.getcwd() + "\\test2.csv", index=False)
 
+def ProcessCities(path: str) -> None:
+    """
+    Takes worldities dataset and translates it into a country based format.
+    """
+    df = ReadDF(path)
+
+    
+    grouped = df.groupby('country')
+    numCities = grouped.size()
+    meanLatitudes = grouped['lat'].mean()
+    meanLongitudes = grouped['lng'].mean()
 
 
+    #somehow works
+    maxDistances = grouped.apply(lambda x: np.max(cdist(x[['lat', 'lng']], [[x['lat'].mean(), x['lng'].mean()]])))
+    meanDistances = grouped.apply(lambda x: np.mean(cdist(x[['lat', 'lng']], [[x['lat'].mean(), x['lng'].mean()]])))
+
+    
+    new_df = pd.DataFrame({
+        'Country': numCities.index,
+        'City Num': numCities.values,
+        'Mean Lat': meanLatitudes.values,
+        'Mean Lng': meanLongitudes.values,
+        'Max Distance': maxDistances,
+        'Mean Distance': meanDistances
+    })
+    new_df.to_csv(os.getcwd() + "\\test.csv")
+
+def ProcessCities2(path: str) -> None:
+    df = ReadDF(path)
+    
+    melteddf = pd.melt(df, id_vars=df.columns[0], value_vars=df.columns[1:])
+    
+
+    repeatedFirstColumn = melteddf[[df.columns[0]]].reindex(melteddf.index.repeat(len(df.columns) - 1)).reset_index(drop=True)
+    repeatedColumnTitles = pd.concat([pd.Series(df.columns[1:])] * len(df), ignore_index=True)
+    
+    
+    new_df = pd.concat([repeatedFirstColumn, repeatedColumnTitles, melteddf['value']], axis=1)
+    col = [range(1789, 2024)]
+
+    new_df.columns = ['Country', 'Index','Value']
+    
+    new_df.insert
+
+    for i in range(1789,2024):
+        new_df[i] = new_df['Value']
+
+    new_df.to_csv(os.getcwd() + "\\test2.csv")
+
+def VPartyToCountry(path: str) -> None:
+    df = ReadDF(path)
+    grouped = df.groupby("country_name")
+    share = grouped.iloc[:,2]
+    print(share)
 
 '''
 Code used to run functions
@@ -274,4 +328,7 @@ Code used to run functions
 
 
 #OrderCSVRows('\data\\processed\\Natural Resource Rent.csv', [0])
-OrderCSVRows('\data\\processed\Demographics.csv', [0, 1, 2, 3, 4, 5])
+#OrderCSVRows('\\data\\raw\\worldcities\\worldcities.csv', [4])
+#ProcessCities2('\\test.csv')
+
+VPartyToCountry('\\data\\raw\\V-Party.csv')
