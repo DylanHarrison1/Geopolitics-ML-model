@@ -218,15 +218,15 @@ class Instance():
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
 
-                relCloseness = [abs(yAct[i]/ yPred[i]) for i in range(5)]
-                for i in range(5):
-                    if (relCloseness[i] > 1):
-                        relCloseness[i] = 1 / relCloseness[i]
+                relCloseness = [abs(yAct[k]/ yPred[k]) for k in range(predYears)]
+                for k in range(predYears):
+                    if (relCloseness[k] > 1):
+                        relCloseness[k] = 1 / relCloseness[k]
                 score.append(relCloseness)
         
         total = [0] * predYears
         for i in score:
-            for j in range(len(total)):
+            for j in range(predYears):
                 total[j] += i[j]
         total = [i / len(score) for i in total] 
         return total
