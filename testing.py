@@ -1,11 +1,15 @@
 from main import Instance
-
+import pandas as pd
+import os
 
 #In model, layer is a list. We could pass that all the way in.
-Data = [["Demographics","N R R", "V-Dem"],
+Data = [["Demographics", "N R R", "V-Dem"],
         [[6,7,8,93,94,95],[1],[1,2,3,4,5,6,7,8,9,10]]]
 
+df = pd.read_csv(os.getcwd() + "\Results.csv")
 
+
+"""
 test0 = Instance("basic", 
                  [1, 10, 10, 5],
                  ["HDI", "Test"],
@@ -16,6 +20,7 @@ test0 = Instance("basic",
 test0.Run(5)
 accuracy = test0.TestModel()
 print(accuracy)
+"""
 
 layerPos = [[20, 20],
             [20, 30, 20],
@@ -41,13 +46,21 @@ for i in range(2 ** len(Data[0])):
     newData[0].insert(0,"HDI")
     newData[1].insert(0,[1])
 
-    for k in range(3):
-        accuracy = 0
-        for l in range(5):
+    for j in range(3):
+        accuracy = []
+        for k in range(5):
             test = Instance("basic", 
-                            [inputSize, (item for item in layerPos[k]), 5],
+                            [inputSize, (item for item in layerPos[j]), 5],
                             newData[0],
                             newData[1],
                             "slice")
             test.Run(10)
-            accuracy += test.TestModel()
+            accuracy.append(test.TestModel())
+
+        mean = 0
+        for x in range(5):
+            for y in range(5):
+                mean += accuracy[y][x]
+            mean = mean / 25
+        df.iloc[i,2 + j] = mean
+    df.to_csv(os.getcwd() + "\Results.csv")    
