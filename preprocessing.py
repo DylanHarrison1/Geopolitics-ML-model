@@ -271,3 +271,7 @@ Code used to run functions
 #TemplateVParty('\data\\raw\V-Dem-CPD-Party-V2.csv')
 
 #FillVParty('\data\\raw\V-Dem-CPD-Party-V2.csv','\\test.csv')
+
+
+#OrderCSVRows('\data\\processed\\Natural Resource Rent.csv', [0])
+OrderCSVRows('\data\\processed\Demographics.csv', [0, 1, 2, 3, 4, 5])
