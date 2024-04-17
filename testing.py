@@ -49,8 +49,12 @@ for i in range(2 ** len(Data[0])):
     for j in range(3):
         accuracy = []
         for k in range(5):
+            layers = layerPos[j]
+            layers.insert(0, inputSize)
+            layers.insert(-1, 5)
+
             test = Instance("basic", 
-                            [inputSize, (item for item in layerPos[j]), 5],
+                            layers,
                             newData[0],
                             newData[1],
                             "slice")
