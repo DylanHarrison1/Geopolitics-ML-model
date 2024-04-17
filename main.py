@@ -9,7 +9,7 @@ import torch
 
 class Instance():
 
-    def __init__(self, modelType: str, modelStructure: list, datasets: list, indices: list, combMethod: str, feedback: bool, graph: bool) -> object:
+    def __init__(self, modelType: str, modelStructure: list, datasets: list, indices: list, combMethod: str, feedback: bool = False, graph: bool = False) -> object:
         """
         modelType, modelStructure- inputs for model[__]
         datasets- list of datasets used to train[__]
