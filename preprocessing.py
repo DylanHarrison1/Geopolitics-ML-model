@@ -294,9 +294,53 @@ def ProcessCities2(path: str) -> None:
 
 def VPartyToCountry(path: str) -> None:
     df = ReadDF(path)
-    grouped = df.groupby("country_name")
-    share = grouped.iloc[:,2]
-    print(share)
+    newdf = pd.DataFrame()
+    
+    while df.shape[0] > 1:
+        #gets data for 1 country
+        value = df.iloc[0, 0]
+        rows = df[df.iloc[:, 0] == value].copy()
+        df.drop(df[df.iloc[:, 0] == value].index, inplace=True)
+
+        repeatingIndices = rows.iloc[:, 2].unique()
+        
+        results = {}
+
+        for index in repeatingIndices:
+
+            subset = rows[rows.iloc[:, 2] == index]
+            row3values = rows.iloc[2, 3:]
+
+            subset = subset.drop(subset.index[[3, 4]])
+            multipliedSet = subset.iloc[:, 3:].mul(row3values, axis=1)
+            addedValues = multipliedSet.sum()
+            results[index] = addedValues
+        newdf = pd.DataFrame(results)
+        newdf = newdf.T
+        newdf.reset_index(inplace=True)
+    
+    newdf.tocsv(os.getcwd() + "\\test.csv")
+
+def GeoPolRisk(path: str) -> None:
+    df = ReadDF(path)
+    
+    #mult everything by index
+    data = df.iloc[:, 2:]
+    GPRH = df.iloc[:, 1]
+    result = data.mul(GPRH, axis=0)
+
+    #convert months to just years
+    #result.iloc[:, 0] = pd.to_datetime(result.iloc[:, 0])
+    #result.iloc[:, 0] = result.iloc[:, 0].dt.year
+
+    #find mean for year
+    meanResult = result.groupby(result.index // 12).mean()
+
+    meanResult = meanResult.T
+    meanResult.columns = range(1900, 2024)
+
+    meanResult.to_csv(os.getcwd() + "\\test.csv")
+
 
 '''
 Code used to run functions
@@ -331,4 +375,5 @@ Code used to run functions
 #OrderCSVRows('\\data\\raw\\worldcities\\worldcities.csv', [4])
 #ProcessCities2('\\test.csv')
 
-VPartyToCountry('\\data\\raw\\V-Party.csv')
+#VPartyToCountry('\\data\\raw\\V-Party.csv')
+GeoPolRisk("\\data\\raw\\Geopolitical Risk.csv")

@@ -7,9 +7,9 @@ The V-Dem and V-Party Datasets    x
 The Geopolitical Risk index    x
 The OECD's Historical Population Dataset    o
 The Augmented Human Development Index    o
-The Natural Resource Rent dataset    x
+The Natural Resource Rent dataset    o
 The International Disaster Database    x
-Cities Database By Country.    x
+Cities Database By Country.    o
 
 
 The data was preprocessed using the functions in preprocessing.py, such that it was ordered 
