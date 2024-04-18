@@ -4,7 +4,7 @@
 The sources of data used to train this model are as follows:
 The World Values Survey
 The V-Dem and V-Party Datasets    x
-The Geopolitical Risk index    x
+The Geopolitical Risk index    o
 The OECD's Historical Population Dataset    o
 The Augmented Human Development Index    o
 The Natural Resource Rent dataset    o

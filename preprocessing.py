@@ -157,7 +157,8 @@ def TemplateVDem(path: str) -> None:
     olddf = ReadDF(path)
 
     countries = olddf['country_name'].unique()
-    years = olddf['year'].unique()
+    #years = olddf['year'].unique()
+    years = [i for i in range(1900, 2023)]
     measures = olddf.columns[2:]
 
     
@@ -205,7 +206,8 @@ def FillVDem(oldpath: str, newpath: str) -> None:
     olddf = ReadDF(oldpath)
     df = ReadDF(newpath)
     #27734 vdem
-    for j in range(1, 27734):
+    #25835 emdat
+    for j in range(1, 25835):
         #Finds equivilant cell in new df, using country, index, and year
         #targets = df.loc[df['country_name'] == olddf.iloc[(j,0)] , str(olddf.iloc[(j,1)])]
         
@@ -376,4 +378,7 @@ Code used to run functions
 #ProcessCities2('\\test.csv')
 
 #VPartyToCountry('\\data\\raw\\V-Party.csv')
-GeoPolRisk("\\data\\raw\\Geopolitical Risk.csv")
+#GeoPolRisk("\\data\\raw\\Geopolitical Risk.csv")
+
+#TemplateVDem("\\data\\raw\\emdat.csv")
+FillVDem("\\data\\raw\\emdat.csv", "\\test.csv")
