@@ -56,7 +56,6 @@ for i in range(1, 2 ** len(Data[0])):
         layers = copy.deepcopy(layerPos[j])
         layers.insert(0, inputSize)
         layers.append(5)
-        print(layers)
 
         #mean of 5
         for k in range(5):
@@ -65,7 +64,7 @@ for i in range(1, 2 ** len(Data[0])):
                             newData[0],
                             newData[1],
                             "slice")
-            test.Run(5)
+            #test.Run(5)
             accuracy.append(test.TestModel())
 
         mean = 0
