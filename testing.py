@@ -3,8 +3,8 @@ import pandas as pd
 import os
 
 #In model, layer is a list. We could pass that all the way in.
-Data = [["Demographics", "Geopol Risk" "N R R", "V-Dem", "WorldCities"],
-        [[6,7,8,93,94,95], [1], [1],[1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
+Data = [["Demographics", "Disasters" "Geopol Risk" "N R R", "V-Dem", "WorldCities"],
+        [[6,7,8,93,94,95], [2,3,4,5,6,7,8,9], [0], [0],[1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
 
 df = pd.read_csv(os.getcwd() + "\Results.csv")
 

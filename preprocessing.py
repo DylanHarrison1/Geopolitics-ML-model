@@ -138,7 +138,7 @@ def rearrangeOECD(inputPath, outputPath):
     df = df.iloc[::73]
     df.to_csv(outputPath, index=False)
 
-def OrderCSVRows(path, columnNumbers):
+def ALphabetise(path, columnNumbers):
     '''
     Orders CSV rows alphabetically by certain columns.
     List is inputted of column precedence.
@@ -343,7 +343,10 @@ def GeoPolRisk(path: str) -> None:
 
     meanResult.to_csv(os.getcwd() + "\\test.csv")
 
-
+def FillWith0(path: str) -> None:
+    df = ReadDF(path)
+    df.fillna(0, inplace=True)
+    df.to_csv(os.getcwd() + path)
 '''
 Code used to run functions
 '''
@@ -381,4 +384,6 @@ Code used to run functions
 #GeoPolRisk("\\data\\raw\\Geopolitical Risk.csv")
 
 #TemplateVDem("\\data\\raw\\emdat.csv")
-FillVDem("\\data\\raw\\emdat.csv", "\\test.csv")
+#FillVDem("\\data\\raw\\emdat.csv", "\\test.csv")
+#FillWith0("\\test2.csv")
+ALphabetise("\\data\\processed\\Disasters.csv", [0, 1])
