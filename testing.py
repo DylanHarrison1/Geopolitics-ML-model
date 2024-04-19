@@ -6,8 +6,8 @@ import copy
 #In model, layer is a list. We could pass that all the way in.
 
 
-Data = [["Demographics", "Disasters" "Geopol Risk" "N R R", "V-Dem", "WorldCities"],
-        [[6,7,8,93,94,95], [2,3,4,5,6,7,8,9], [0], [0],[1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
+Data = [["Demographics", "Disasters", "Geopol Risk", "N R R", "V-Dem", "WorldCities"],
+        [[6,7,8,93,94,95], [2,3,4,5,6,7,8,9], [0], [0], [1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
 
 df = pd.read_csv(os.getcwd() + "\Results.csv")
 
@@ -38,7 +38,7 @@ for i in range(1, 2 ** len(Data[0])):
     boolList = [bit == '1' for bit in binNum]
     newData = [[],[]]
     for j in range(2):
-        newData[j] = [Data[j][i] for i, value in enumerate(boolList) if value]
+        newData[j] = copy.deepcopy([Data[j][i] for i, value in enumerate(boolList) if value])
     
     inputSize = 0
     for innerList in newData[1]:
@@ -65,9 +65,8 @@ for i in range(1, 2 ** len(Data[0])):
                             newData[0],
                             newData[1],
                             "slice")
-            #test.Run(5)
-            #accuracy.append(test.TestModel())
-            accuracy.append([2,2,2,2,2])
+            test.Run(5)
+            accuracy.append(test.TestModel())
 
         mean = 0
         for x in range(5):
@@ -76,5 +75,5 @@ for i in range(1, 2 ** len(Data[0])):
         mean = mean / 25
         mean = float(mean)
         print(str(i) + " " + str(mean))
-        df.iat[2 + j, i] = mean
+        df.at[i, str(j + 1)] = mean
     df.to_csv(os.getcwd() + "\Results.csv")    
