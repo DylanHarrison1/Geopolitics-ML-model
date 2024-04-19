@@ -385,10 +385,7 @@ Code used to run functions
 
 #TemplateVDem("\\data\\raw\\emdat.csv")
 #FillVDem("\\data\\raw\\emdat.csv", "\\test.csv")
-#FillWith0("\\test2.csv")
+
 #ALphabetise("\\data\\processed\\Disasters.csv", [0, 1])
 
-df = ReadDF("\\Results.csv")
-columns_to_convert = ['1', '2', '3']
-df[columns_to_convert] = df[columns_to_convert].astype('object')
-df.to_csv(os.getcwd() + "\\Results.csv")
+FillWith0("\\data\\processed\\V-Dem.csv")
