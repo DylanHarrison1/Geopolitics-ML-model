@@ -76,5 +76,5 @@ for i in range(1, 2 ** len(Data[0])):
         mean = mean / 25
         mean = float(mean)
         print(str(i) + " " + str(mean))
-        df.iat[1 + j, i] = mean
+        df.iat[2 + j, i] = mean
     df.to_csv(os.getcwd() + "\Results.csv")    
