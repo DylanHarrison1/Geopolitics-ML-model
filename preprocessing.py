@@ -11,7 +11,7 @@ from scipy.spatial.distance import cdist
 # - Create dataset per country with inputs and outputs over time.
 
 
-def ReadDF(path: str, index: int = 0) -> pd.DataFrame:
+def ReadDF(path: str, index: int = None) -> pd.DataFrame:
     """
     Locates dataframe in local files and returns.
     """
@@ -156,9 +156,9 @@ def TemplateVDem(path: str) -> None:
     """
     olddf = ReadDF(path)
 
-    countries = olddf['country_name'].unique()
+    countries = olddf['Country'].unique()
     #years = olddf['year'].unique()
-    years = [i for i in range(1900, 2023)]
+    years = [i for i in range(1789, 2024)]
     measures = olddf.columns[2:]
 
     
@@ -168,13 +168,13 @@ def TemplateVDem(path: str) -> None:
     
     years = [str(i) for i in years]
 
-    years = ['country_name','indices'] + years
+    years = ['Country','indices'] + years
 
     
     df = pd.DataFrame(columns=years)
-    df['country_name'] = finc
+    df['Country'] = finc
     df['indices'] = finm
-    df.to_csv(os.getcwd() + "\\test.csv", index=False)
+    df.to_csv(os.getcwd() + "\\test2.csv", index=False)
 
 def TemplateVParty(path: str) -> None:
     olddf = ReadDF(path)
@@ -248,7 +248,7 @@ def ProcessCities(path: str) -> None:
     """
     Takes worldities dataset and translates it into a country based format.
     """
-    df = ReadDF(path)
+    df = ReadDF(path, None)
 
     
     grouped = df.groupby('country')
@@ -347,6 +347,19 @@ def FillWith0(path: str) -> None:
     df = ReadDF(path)
     df.fillna(0, inplace=True)
     df.to_csv(os.getcwd() + path)
+
+def Country3(path: str) -> None:
+    df = ReadDF(path)
+    df = pd.melt(df, id_vars=["country"], value_vars= ["City Num","Mean Lat","Mean Lng","Max Distance","Mean Distance"])
+
+    newcols = [i for i in range(1789,2024)]
+    col3 = df.iloc[:, 2]
+
+    # Iterate over column names and add new columns
+    for name in newcols:
+        df[name] = col3
+
+    df.to_csv(os.getcwd() + "\\test3.csv")
 '''
 Code used to run functions
 '''
@@ -386,6 +399,10 @@ Code used to run functions
 #TemplateVDem("\\data\\raw\\emdat.csv")
 #FillVDem("\\data\\raw\\emdat.csv", "\\test.csv")
 
-#ALphabetise("\\data\\processed\\Disasters.csv", [0, 1])
+ALphabetise("\\test3.csv", [0, 1])
 
-FillWith0("\\data\\processed\\V-Dem.csv")
+#FillWith0("\\data\\processed\\V-Dem.csv")
+
+#ProcessCities("\\data\\raw\\worldcities.csv")
+#TemplateVDem("\\test.csv")
+#Country3("\\test.csv")

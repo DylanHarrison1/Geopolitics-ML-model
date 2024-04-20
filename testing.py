@@ -30,7 +30,7 @@ layerPos = [[20, 20],
             [20, 30, 30, 20]]
 
 #every possibility from Data (except for 0)
-for i in range(1, 2 ** len(Data[0])):
+for i in range(33, 2 ** len(Data[0])):
     print("__________________________")
 
     #convert i to binary, apply to Data
@@ -46,6 +46,7 @@ for i in range(1, 2 ** len(Data[0])):
             if isinstance(item, int):
                 inputSize += 1
     
+    print(newData[0])
     newData[0].insert(0,"HDI")
     newData[1].insert(0,[1])
 
