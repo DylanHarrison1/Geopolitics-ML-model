@@ -11,13 +11,13 @@ from scipy.spatial.distance import cdist
 # - Create dataset per country with inputs and outputs over time.
 
 
-def ReadDF(path: str) -> pd.DataFrame:
+def ReadDF(path: str, index: int = 0) -> pd.DataFrame:
     """
     Locates dataframe in local files and returns.
     """
     
     path = os.getcwd() + path
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, index_col=index)
     return df
 
 def AddEmptyColumns(file: str, interpolate: bool) -> None:

@@ -64,9 +64,7 @@ for i in range(1, 2 ** len(Data[0])):
                             newData[0],
                             newData[1],
                             "slice")
-            print("ok")
             test.Run(5)
-            print("ok")
             accuracy.append(test.TestModel())
 
         mean = 0

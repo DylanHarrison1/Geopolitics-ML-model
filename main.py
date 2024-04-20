@@ -27,7 +27,7 @@ class Instance():
         self._indices = indices
 
         #Gets the subset of meta with just these datasets
-        meta = ReadDF("\data\\processed\meta.csv")
+        meta = ReadDF("\data\\processed\meta.csv", None)
 
         meta = meta[meta.loc[:, "DBName"].isin(datasets)]
 
@@ -35,7 +35,7 @@ class Instance():
         self._data = []
 
         for i in range(meta.shape[0]):
-            self._data.append(ReadDF(meta.iloc[i,1]))
+            self._data.append(ReadDF(meta.iloc[i,1], None))
 
         #Fits the datasets to each other
         if (combMethod == "slice"):
