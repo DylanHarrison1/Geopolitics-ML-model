@@ -399,7 +399,7 @@ Code used to run functions
 #TemplateVDem("\\data\\raw\\emdat.csv")
 #FillVDem("\\data\\raw\\emdat.csv", "\\test.csv")
 
-ALphabetise("\\test3.csv", [0, 1])
+#ALphabetise("\\test3.csv", [0, 1])
 
 #FillWith0("\\data\\processed\\V-Dem.csv")
 
