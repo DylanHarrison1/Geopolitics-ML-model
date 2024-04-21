@@ -249,7 +249,7 @@ class Instance():
         x = []
         for k in range(1, len(self._data)): #Loops through datasets
             for l in range(len(self._indices[k])): #Loops through indexes in datasets
-                value = self._data[k].iloc[int(self._meta.iloc[k, 5]) * i  + (self._indices[k][l] - 1),j]
+                value = self._data[k].iloc[int(self._meta.iloc[k, 5]) * i  + (self._indices[k][l]),j]
                 #                           num of indexes * country num(i) +      which index
                 x.append(float(value))
         return x

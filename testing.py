@@ -6,7 +6,7 @@ import copy
 #In model, layer is a list. We could pass that all the way in.
 
 
-Data = [["Demographics", "Disasters", "Geopol Risk", "N R R", "V-Dem", "WorldCities"],
+Data = [["Demographics", "Disasters", "Geopol Risk", "N R R", "V-Dem", "Worldcities"],
         [[6,7,8,93,94,95], [2,3,4,5,6,7,8,9], [0], [0], [1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
 
 df = pd.read_csv(os.getcwd() + "\Results.csv")
@@ -30,7 +30,7 @@ layerPos = [[20, 20],
             [20, 30, 30, 20]]
 
 #every possibility from Data (except for 0)
-for i in range(1, 2 ** len(Data[0])):
+for i in range(33, 2 ** len(Data[0])):
     print("__________________________")
 
     #convert i to binary, apply to Data
@@ -46,6 +46,7 @@ for i in range(1, 2 ** len(Data[0])):
             if isinstance(item, int):
                 inputSize += 1
     
+    print(newData[0])
     newData[0].insert(0,"HDI")
     newData[1].insert(0,[1])
 
@@ -56,6 +57,7 @@ for i in range(1, 2 ** len(Data[0])):
         layers = copy.deepcopy(layerPos[j])
         layers.insert(0, inputSize)
         layers.append(5)
+        print(layers)
 
         #mean of 5
         for k in range(5):
