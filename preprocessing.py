@@ -149,7 +149,6 @@ def ALphabetise(path, columnNumbers):
     
     sorted_df.to_csv(path, index=False)
 
-
 def TemplateVDem(path: str) -> None:
     """
     Works, creates a table as template for filling for V-Dem.
@@ -271,6 +270,7 @@ def ProcessCities(path: str) -> None:
         'Mean Distance': meanDistances
     })
     new_df.to_csv(os.getcwd() + "\\test.csv")
+    
 
 def ProcessCities2(path: str) -> None:
     df = ReadDF(path)
@@ -295,33 +295,48 @@ def ProcessCities2(path: str) -> None:
     new_df.to_csv(os.getcwd() + "\\test2.csv")
 
 def VPartyToCountry(path: str) -> None:
-    df = ReadDF(path)
-    newdf = pd.DataFrame()
+    df = ReadDF(path, None)
+    result = pd.DataFrame()
     
     while df.shape[0] > 1:
+        print(df.shape[0])
         #gets data for 1 country
         value = df.iloc[0, 0]
         rows = df[df.iloc[:, 0] == value].copy()
         df.drop(df[df.iloc[:, 0] == value].index, inplace=True)
 
-        repeatingIndices = rows.iloc[:, 2].unique()
-        
-        results = {}
 
-        for index in repeatingIndices:
+        length = len(rows) // 26
+        toadd = []
+        for i in range(length):
+            start = i * 26
+            end = (i + 1) * 26
 
-            subset = rows[rows.iloc[:, 2] == index]
-            row3values = rows.iloc[2, 3:]
+            set = rows.iloc[start:end]
+            tomult = set.iloc[:, 3:]
 
-            subset = subset.drop(subset.index[[3, 4]])
-            multipliedSet = subset.iloc[:, 3:].mul(row3values, axis=1)
-            addedValues = multipliedSet.sum()
-            results[index] = addedValues
-        newdf = pd.DataFrame(results)
-        newdf = newdf.T
-        newdf.reset_index(inplace=True)
-    
-    newdf.tocsv(os.getcwd() + "\\test.csv")
+            multiplied_set = tomult.multiply(set.iloc[2, 3:], axis=1)
+            multiplied_set = pd.concat([set.iloc[:, :3], multiplied_set], axis=1)
+            multiplied_set = multiplied_set.drop(multiplied_set.index[2:5])
+
+            toadd.append(multiplied_set)
+
+            summed_set = toadd[0].copy()
+
+            #1 party
+            if len(toadd) > 0:
+                for table in toadd[1:]:
+                    for column in summed_set.columns:
+                        if pd.api.types.is_numeric_dtype(summed_set[column].dtype):
+                            summed_set[column] += table[column].fillna(0)
+                        else:
+                            summed_set[column] = summed_set[column]
+
+
+
+        result = pd.concat([result, summed_set])
+    result.to_csv(os.getcwd() + "\\test.csv")
+
 
 def GeoPolRisk(path: str) -> None:
     df = ReadDF(path)
@@ -347,6 +362,35 @@ def FillWith0(path: str) -> None:
     df = ReadDF(path)
     df.fillna(0, inplace=True)
     df.to_csv(os.getcwd() + path)
+
+def InterpolateOr0(path: str) -> None:
+    """
+    Interpolates of sets to 0 when cannot. Works on any table, not just ones with gaps in the same places.
+    """
+    df = ReadDF(path)
+
+    for index, row in df.iterrows():
+        print(index)
+        for i in range(3, len(row)):
+            if pd.isna(row[i]):
+                left_index = i - 1
+                right_index = i + 1
+                while left_index >= 3 and pd.isna(row[left_index]):
+                    left_index -= 1
+                while right_index < len(row) and pd.isna(row[right_index]):
+                    right_index += 1
+                
+                # Interpolate if values found within area
+                if left_index >= 3 and right_index < len(row):
+                    left_value = row[left_index]
+                    right_value = row[right_index]
+                    interpolated_value = left_value + (right_value - left_value) * ((i - left_index) / (right_index - left_index))
+                    df.at[index, row.index[i]] = interpolated_value
+                else:
+                    df.at[index, row.index[i]] = 0
+
+    df.to_csv(os.getcwd() + "\\test2.csv")
+
 '''
 Code used to run functions
 '''
@@ -388,4 +432,6 @@ Code used to run functions
 
 #ALphabetise("\\data\\processed\\Disasters.csv", [0, 1])
 
-FillWith0("\\data\\processed\\V-Dem.csv")
+#FillWith0("\\data\\processed\\V-Dem.csv")
+#VPartyToCountry("\\data\\raw\\V-Party.csv")
+InterpolateOr0("\\test.csv")
