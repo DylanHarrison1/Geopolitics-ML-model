@@ -1,10 +1,10 @@
 DBName,FilePath,ColumnStart,YrStart,YrEnd,Indices
 HDI,\data\\processed\HDI (1870-2020).csv,1,1870,2020,1
+V-Party,\data\\processed\V-Party.csv,2,1900,2023,23
 Demographics,\data\\processed\Demographics.csv,7,1950,2022,99
 Disasters,\data\\processed\Disasters.csv,2,1900,2022,10
 Geopol Risk,\data\\processed\Geopolitical Risk.csv,1,1900,2023,1
 N R R,\data\\processed\Natural Resource Rent.csv,1,1960,2022,1
 Test,\data\\processed\test.csv,1,1980,1999,1
 V-Dem,\data\\processed\V-Dem.csv,2,1789,2023,11
-V-Party,\data\\processed\V-Party.csv,2,1900,2023,23
 Worldcities,\data\\processed\Worldcities.csv,2,1789,2023,5

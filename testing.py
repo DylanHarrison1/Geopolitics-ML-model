@@ -7,7 +7,8 @@ import copy
 
 
 Data = [["V-Party", "Demographics", "Disasters", "Geopol Risk", "N R R", "V-Dem", "Worldcities"],
-        [[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], [6,7,8,93,94,95], [2,3,4,5,6,7,8,9], [0], [0], [1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
+        [[0,1,2,7,21,22], [6,7,8,93,94,95], [2,3,4,5,6,7,8,9], [0], [0], [1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
+
 
 df = pd.read_csv(os.getcwd() + "\Results.csv")
 
@@ -30,12 +31,14 @@ layerPos = [[20, 20],
             [20, 30, 30, 20]]
 
 #every possibility from Data (except for 0)
-for i in range(33, 2 ** len(Data[0])):
+for i in range(67, 2 ** len(Data[0])):
     print("__________________________")
 
     #convert i to binary, apply to Data
     binNum = bin(i)[2:]
     boolList = [bit == '1' for bit in binNum]
+    while (len(boolList) < 7):
+        boolList.insert(0, False)
     newData = [[],[]]
     for j in range(2):
         newData[j] = copy.deepcopy([Data[j][i] for i, value in enumerate(boolList) if value])
@@ -46,7 +49,7 @@ for i in range(33, 2 ** len(Data[0])):
             if isinstance(item, int):
                 inputSize += 1
     
-    print(newData[0])
+    print(newData[0], inputSize)
     newData[0].insert(0,"HDI")
     newData[1].insert(0,[1])
 
