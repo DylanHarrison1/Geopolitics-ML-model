@@ -6,8 +6,8 @@ import copy
 #In model, layer is a list. We could pass that all the way in.
 
 
-Data = [["Demographics", "Disasters", "Geopol Risk", "N R R", "V-Dem", "Worldcities"],
-        [[6,7,8,93,94,95], [2,3,4,5,6,7,8,9], [0], [0], [1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
+Data = [["V-Party", "Demographics", "Disasters", "Geopol Risk", "N R R", "V-Dem", "Worldcities"],
+        [[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], [6,7,8,93,94,95], [2,3,4,5,6,7,8,9], [0], [0], [1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
 
 df = pd.read_csv(os.getcwd() + "\Results.csv")
 
@@ -57,7 +57,6 @@ for i in range(33, 2 ** len(Data[0])):
         layers = copy.deepcopy(layerPos[j])
         layers.insert(0, inputSize)
         layers.append(5)
-        print(layers)
 
         #mean of 5
         for k in range(5):

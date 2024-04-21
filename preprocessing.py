@@ -446,8 +446,9 @@ Code used to run functions
 
 #FillWith0("\\data\\processed\\V-Dem.csv")
 #VPartyToCountry("\\data\\raw\\V-Party.csv")
-InterpolateOr0("\\test.csv")
+#InterpolateOr0("\\test.csv")
 
 #ProcessCities("\\data\\raw\\worldcities.csv")
 #TemplateVDem("\\test.csv")
 #Country3("\\test.csv")
+FillWith0("\\data\\processed\\V-Party.csv")
