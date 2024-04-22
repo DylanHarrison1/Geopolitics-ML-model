@@ -31,7 +31,8 @@ layerPos = [[20, 20],
             [20, 30, 30, 20]]
 
 #every possibility from Data (except for 0)
-for i in range(67, 2 ** len(Data[0])):
+#for i in range(86, 2 ** len(Data[0])):
+for i in range(64, 65):
     print("__________________________")
 
     #convert i to binary, apply to Data
@@ -77,6 +78,6 @@ for i in range(67, 2 ** len(Data[0])):
                 mean += accuracy[y][x]
         mean = mean / 25
         mean = float(mean)
-        print(str(i) + " " + str(mean))
+        print(str(i) + " " + str(mean) + str(layers))
         df.at[i, str(j + 1)] = mean
     df.to_csv(os.getcwd() + "\Results.csv")    
