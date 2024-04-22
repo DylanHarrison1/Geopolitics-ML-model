@@ -107,11 +107,12 @@ class Instance():
 
 
         for i in range(self._data[0].shape[0]): #Loop through all countries
+            x = self.__GetX(i)
             for j in range(self._data[0].shape[1] - (predYears * 2)): #Loops to year end minus test set
                 
-                x = self.__GetX(i, j)
-
-                yPred = self._instance.calc(x)
+                
+                thisx = x[j]
+                yPred = self._instance.calc(thisx)
                 yPred = self.__AddGaussianNoise(yPred)
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
@@ -209,12 +210,13 @@ class Instance():
         score = []
         
         for i in range(self._data[0].shape[0]): #Loop through all countries
+            x = self.__GetX(i)
             for j in range(self._data[0].shape[1] - (predYears * 2), self._data[0].shape[1] - predYears): #last years
                 
 
 
-                x = self.__GetX(i, j)
-                yPred = self._instance.calc(x)
+                thisx = x[j]
+                yPred = self._instance.calc(thisx)
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
 
@@ -242,14 +244,14 @@ class Instance():
         noise = torch.randn(data.size()) * std + mean
         return data + noise
     
-    def __GetX(self, i: int, j: int) -> list:
+    def __GetX(self, i: int) -> list:
         """
-        Takes i (country) and j (year) and returns all of the x values from each index from each dataset
+        Takes i (country) and returns all of the x values from each index from each dataset for every year.
         """
         x = []
         for k in range(1, len(self._data)): #Loops through datasets
             for l in range(len(self._indices[k])): #Loops through indexes in datasets
-                value = self._data[k].iloc[int(self._meta.iloc[k, 5]) * i  + (self._indices[k][l]),j]
+                value = self._data[k].iloc[int(self._meta.iloc[k, 5]) * i  + (self._indices[k][l]),:]
                 #                           num of indexes * country num(i) +      which index
 
                 x.append(float(value))
