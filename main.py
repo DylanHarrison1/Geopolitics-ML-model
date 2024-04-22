@@ -111,7 +111,7 @@ class Instance():
             for j in range(self._data[0].shape[1] - (predYears * 2)): #Loops to year end minus test set
                 
                 
-                thisx = x[j]
+                thisx = x.iloc[:,j]
                 yPred = self._instance.calc(thisx)
                 yPred = self.__AddGaussianNoise(yPred)
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
@@ -215,7 +215,7 @@ class Instance():
                 
 
 
-                thisx = x[j]
+                thisx = x.iloc[:,j]
                 yPred = self._instance.calc(thisx)
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
