@@ -1,4 +1,4 @@
-from model import Model
+from model import Model, TCN
 import pandas as pd
 import os
 import numpy as np
@@ -20,7 +20,7 @@ class Instance():
         """
         self._feedback = feedback
         self._graph = graph
-        self._instance = Model(modelType, modelStructure)
+        self._modelType = modelType
         self._lossData = []
         self._modelType = modelType
         self._modelStructure = modelStructure
@@ -68,6 +68,12 @@ class Instance():
 
         self._meta = meta
 
+        #Creates Model
+        if modelType == "basic":
+            self._instance = Model(modelType, modelStructure)
+        elif modelType == "TCN":
+            self._instance = TCN(len(self._data), modelStructure)
+
     def __DemogToHDI_LDI(self, df, key):
         '''
         Fetches corresponding data to Demog from the HDI and LDI
@@ -108,10 +114,22 @@ class Instance():
 
         for i in range(self._data[0].shape[0]): #Loop through all countries
             x = self.__GetX(i)
-            for j in range(self._data[0].shape[1] - (predYears * 2)): #Loops to year end minus test set
+            
+
+            if self._modelType == "basic":
+                stop = self._data[0].shape[1] - (predYears * 2)
+            elif self._modelType == "TCN":
+                stop = 1
+                trainto = self._data[0].shape[1] - predYears
+            for j in range(stop): #Loops to year end minus test set
                 
-                
-                thisx = [this[j] for this in x]
+                if self._modelType == "basic":
+                    thisx = [this[j] for this in x]
+                elif self._modelType == "TCN":
+                    thisx = [this[:trainto] for this in x]
+
+
+
                 yPred = self._instance.calc(thisx)
                 yPred = self.__AddGaussianNoise(yPred)
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
@@ -211,11 +229,22 @@ class Instance():
         
         for i in range(self._data[0].shape[0]): #Loop through all countries
             x = self.__GetX(i)
-            for j in range(self._data[0].shape[1] - (predYears * 2), self._data[0].shape[1] - predYears): #last years
+
+            if self._modelType == "basic":
+                start = self._data[0].shape[1] - (predYears * 2)
+                stop = self._data[0].shape[1] - predYears
+            elif self._modelType == "TCN":
+                start = 0
+                stop = 1
+                trainfrom = predYears
+            for j in range(start, stop): #last years
                 
 
+                if self._modelType == "basic":
+                    thisx = [this[j] for this in x]
+                elif self._modelType == "TCN":
+                    thisx = [this[trainfrom:] for this in x]
 
-                thisx = [this[j] for this in x]
                 yPred = self._instance.calc(thisx)
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
 

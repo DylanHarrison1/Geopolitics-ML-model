@@ -9,6 +9,8 @@ import copy
 Data = [["V-Party", "Demographics", "Disasters", "Geopol Risk", "N R R", "V-Dem", "Worldcities"],
         [[0,1,2,7,21,22], [6,7,8,93,94,95], [2,3,4,5,6,7,8,9], [0], [0], [1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
 
+Data2 =  [["V-Party", "Disasters", "Geopol Risk", "N R R", "V-Dem", "Worldcities"],
+          [[0,1,2,7,21,22], [2,3,4,5,6,7,8,9], [0], [0], [1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
 
 df = pd.read_csv(os.getcwd() + "\Results.csv")
 
@@ -83,14 +85,21 @@ def BigTest():
         #df.to_csv(os.getcwd() + "\Results.csv")    
 
 def TCNtest():
+    inputSize = 0
+    for innerList in Data2[1]:
+        for item in innerList:
+            if isinstance(item, int):
+                inputSize += 1
+
+    accuracy = []
     for k in range(5):
-        test = Instance("basic", 
-                        layers,
-                        newData[0],
-                        newData[1],
+        test = Instance("TCN", 
+                        [inputSize, 20, 30, 20, 1],
+                        Data2[0],
+                        Data2[1],
                         "slice")
-        test.Run(5)
-        accuracy.append(test.TestModel())
+        #test.Run(5)
+        #accuracy.append(test.TestModel())
 
     mean = 0
     for x in range(5):
@@ -98,5 +107,8 @@ def TCNtest():
             mean += accuracy[y][x]
     mean = mean / 25
     mean = float(mean)
-    print(str(i) + " " + str(mean) + str(layers))
-    df.at[i, str(j + 1)] = mean
+    print(str(mean))
+    print(accuracy)
+
+
+TCNtest()
