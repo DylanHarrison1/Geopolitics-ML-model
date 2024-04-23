@@ -111,7 +111,7 @@ class Instance():
             for j in range(self._data[0].shape[1] - (predYears * 2)): #Loops to year end minus test set
                 
                 
-                thisx = x.iloc[:,j]
+                thisx = [this[j] for this in x]
                 yPred = self._instance.calc(thisx)
                 yPred = self.__AddGaussianNoise(yPred)
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
@@ -215,7 +215,7 @@ class Instance():
                 
 
 
-                thisx = x.iloc[:,j]
+                thisx = [this[j] for this in x]
                 yPred = self._instance.calc(thisx)
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
@@ -254,6 +254,6 @@ class Instance():
                 value = self._data[k].iloc[int(self._meta.iloc[k, 5]) * i  + (self._indices[k][l]),:]
                 #                           num of indexes * country num(i) +      which index
 
-                x.append(float(value))
+                x.append([float(number) for number in value])
         return x
         
