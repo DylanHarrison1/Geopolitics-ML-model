@@ -2,7 +2,7 @@ import torch
 from torch import nn
 import numpy as np
 import pandas as pd
-
+#Padding incorrect?
 
 class Model(torch.nn.Module):
     def __init__(self, structure: list) -> None:
@@ -81,36 +81,41 @@ class TemporalBlock(nn.Module):
         self.downsample = None
         if inSize != outSize:
             self.downsample = nn.Conv1d(inSize, outSize, 1)
-        self.__initialise_weights()
+        self.__Initialise_Weights()
 
-    def __initialise_weights(self):
+    def __Initialise_Weights(self):
         nn.init.kaiming_normal_(self.layers[0].weight, mode='fan_out', nonlinearity='relu')
         nn.init.kaiming_normal_(self.layers[3].weight, mode='fan_out', nonlinearity='relu')
         if self.downsample is not None:
             nn.init.kaiming_normal_(self.downsample.weight, mode='fan_out', nonlinearity='relu')
 
-    def calc(self, x):
+    def forward(self, x):
         residual = x
         out = self.layers(x)
 
         if self.downsample is not None:
             residual = self.downsample(residual)
+        
+        print(out.shape)
+        print(residual.shape)
         out += residual
         out = self.relu(out)
         return out
 
 class TCN(torch.nn.Module):
-    def __init__(self, inputSize: int, channels: list, kernelSize=2):
+    def __init__(self, inputLength: int, outputLength: int, channels: list, kernelSize=2):
         super(TCN, self).__init__()
         layers = []
         depth = len(channels)
 
-        for i in range(depth):
+        for i in range(0, depth):
             dilation_size = 2 ** i
-            inC = inputSize if i == 0 else channels[i-1]
+            inC = inputLength if i == 0 else channels[i-1]
             outC = channels[i]
             layers.append(TemporalBlock(inC, outC, kernelSize, stride=1, dilation=dilation_size, padding=(kernelSize-1) * dilation_size, dropout=0.2))
         
+        layers.append(nn.Dropout(p=0.2))
+        layers.append(nn.Linear(channels[-1], outputLength))
         self.network = nn.Sequential(*layers)
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=0.001)

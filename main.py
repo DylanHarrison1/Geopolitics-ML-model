@@ -72,7 +72,7 @@ class Instance():
         if modelType == "basic":
             self._instance = Model(modelType, modelStructure)
         elif modelType == "TCN":
-            self._instance = TCN(len(self._data), modelStructure)
+            self._instance = TCN(60, self._data[0].shape[0] - 5, modelStructure)
 
     def __DemogToHDI_LDI(self, df, key):
         '''
@@ -122,14 +122,15 @@ class Instance():
                 stop = 1
                 trainto = self._data[0].shape[1] - predYears
             for j in range(stop): #Loops to year end minus test set
-                
+
                 if self._modelType == "basic":
                     thisx = [this[j] for this in x]
                 elif self._modelType == "TCN":
                     thisx = [this[:trainto] for this in x]
-
-
-
+                    thisx = np.array(thisx).T
+                #print(len(thisx))
+                #print(len(thisx[0]))
+                
                 yPred = self._instance.calc(thisx)
                 yPred = self.__AddGaussianNoise(yPred)
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
