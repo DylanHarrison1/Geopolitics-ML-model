@@ -97,7 +97,7 @@ def TCNtest():
     accuracy = []
     for k in range(5):
         test = Instance("TCN", 
-                        [inputSize, 20, 30, 20, 1],
+                        [40, 50, 40, 20, 10, 1],
                         Data2[0],
                         Data2[1],
                         "slice")

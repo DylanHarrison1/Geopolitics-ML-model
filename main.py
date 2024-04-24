@@ -72,7 +72,8 @@ class Instance():
         if modelType == "basic":
             self._instance = Model(modelType, modelStructure)
         elif modelType == "TCN":
-            self._instance = TCN(60, self._data[0].shape[0] - 5, modelStructure)
+            self._instance = TCN(self._data[0].shape[0] - 5, 31, modelStructure)
+        #self._data[0].shape[0] - 5
 
     def __DemogToHDI_LDI(self, df, key):
         '''
@@ -127,7 +128,7 @@ class Instance():
                     thisx = [this[j] for this in x]
                 elif self._modelType == "TCN":
                     thisx = [this[:trainto] for this in x]
-                    thisx = np.array(thisx).T
+                    #thisx = np.array(thisx).T
                 #print(len(thisx))
                 #print(len(thisx[0]))
                 
@@ -225,27 +226,46 @@ class Instance():
         plt.show()
 
     def TestModel(self):
-        predYears = self._modelStructure[-1] #output size
-        score = []
         
-        for i in range(self._data[0].shape[0]): #Loop through all countries
-            x = self.__GetX(i)
+        if self._modelType == "basic":
+            predYears = self._modelStructure[-1]  
+            score = [] 
+            for i in range(self._data[0].shape[0]): #Loop through all countries
+                x = self.__GetX(i)
 
-            if self._modelType == "basic":
+                
                 start = self._data[0].shape[1] - (predYears * 2)
                 stop = self._data[0].shape[1] - predYears
-            elif self._modelType == "TCN":
-                start = 0
-                stop = 1
-                trainfrom = predYears
-            for j in range(start, stop): #last years
-                
-
-                if self._modelType == "basic":
+                    
+                for j in range(start, stop): #last years
+                    
                     thisx = [this[j] for this in x]
-                elif self._modelType == "TCN":
-                    thisx = [this[trainfrom:] for this in x]
+                    yPred = self._instance.calc(thisx)
+                    yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
+
+                    relCloseness = [abs(yAct[k]/ yPred[k]) for k in range(predYears)]
+                    for k in range(predYears):
+                        if (relCloseness[k] > 1):
+                            relCloseness[k] = 1 / relCloseness[k]
+                    score.append(relCloseness)
+            
+            total = [0] * predYears
+            for i in score:
+                for j in range(predYears):
+                    total[j] += i[j]
+            total = [i / len(score) for i in total] 
+            return total   
+          
+        elif self._modelType == "TCN":
+            predYears = (self._data[0].shape[0] - 5, self._data[0].shape[0])
+            score = []  
+            for i in range(self._data[0].shape[0]): #Loop through all countries
+                x = self.__GetX(i)
+
+                trainfrom = self._data[0].shape[0] - 5
+                
+                thisx = [this[trainfrom:] for this in x]
                 yPred = self._instance.calc(thisx)
                 yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
@@ -255,13 +275,8 @@ class Instance():
                     if (relCloseness[k] > 1):
                         relCloseness[k] = 1 / relCloseness[k]
                 score.append(relCloseness)
-        
-        total = [0] * predYears
-        for i in score:
-            for j in range(predYears):
-                total[j] += i[j]
-        total = [i / len(score) for i in total] 
-        return total
+
+
 
     def __PrintProgress(self, i, countries, lossMean, gradient):
         print("~~~~~~~~~~~~~~~~~~~~~~~~")

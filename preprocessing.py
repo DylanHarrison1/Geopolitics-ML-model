@@ -272,28 +272,6 @@ def ProcessCities(path: str) -> None:
     new_df.to_csv(os.getcwd() + "\\test.csv")
     
 
-def ProcessCities2(path: str) -> None:
-    df = ReadDF(path)
-    
-    melteddf = pd.melt(df, id_vars=df.columns[0], value_vars=df.columns[1:])
-    
-
-    repeatedFirstColumn = melteddf[[df.columns[0]]].reindex(melteddf.index.repeat(len(df.columns) - 1)).reset_index(drop=True)
-    repeatedColumnTitles = pd.concat([pd.Series(df.columns[1:])] * len(df), ignore_index=True)
-    
-    
-    new_df = pd.concat([repeatedFirstColumn, repeatedColumnTitles, melteddf['value']], axis=1)
-    col = [range(1789, 2024)]
-
-    new_df.columns = ['Country', 'Index','Value']
-    
-    new_df.insert
-
-    for i in range(1789,2024):
-        new_df[i] = new_df['Value']
-
-    new_df.to_csv(os.getcwd() + "\\test2.csv")
-
 def VPartyToCountry(path: str) -> None:
     df = ReadDF(path, None)
     result = pd.DataFrame()
@@ -391,7 +369,7 @@ def InterpolateOr0(path: str) -> None:
 
     df.to_csv(os.getcwd() + "\\test2.csv")
 
-def Country3(path: str) -> None:
+def ProcessCities2(path: str) -> None:
     df = ReadDF(path)
     df = pd.melt(df, id_vars=["country"], value_vars= ["City Num","Mean Lat","Mean Lng","Max Distance","Mean Distance"])
 
