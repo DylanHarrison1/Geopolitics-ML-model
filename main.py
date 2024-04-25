@@ -9,7 +9,7 @@ import torch
 
 class Instance():
 
-    def __init__(self, modelType: str, modelStructure: list, datasets: list, indices: list, combMethod: str, feedback: bool = False, graph: bool = False) -> object:
+    def __init__(self, modelType: str, modelStructure: list, datasets: list, indices: list, combMethod: str, trainLength: int, yrToPredict: int, feedback: bool = False, graph: bool = False) -> object:
         """
         modelType, modelStructure- inputs for model[__]
         datasets- list of datasets used to train[__]
@@ -25,6 +25,8 @@ class Instance():
         self._modelType = modelType
         self._modelStructure = modelStructure
         self._indices = indices
+        self._trainLength = trainLength
+        self._yrToPredict = yrToPredict
 
         #Gets the subset of meta with just these datasets
         meta = ReadDF("\data\\processed\meta.csv", None)
@@ -72,7 +74,10 @@ class Instance():
         if modelType == "basic":
             self._instance = Model(modelType, modelStructure)
         elif modelType == "TCN":
-            self._instance = TCN(self._data[0].shape[0] - 5, 31, modelStructure)
+            self._trainLength = self._data[0].shape[1] - (yrToPredict * 2)
+            self._instance = TCN(self._trainLength, 31, modelStructure)
+            #print(self._data[0].shape[1], self._trainLength)#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            
         #self._data[0].shape[0] - 5
 
     def __DemogToHDI_LDI(self, df, key):
@@ -119,24 +124,30 @@ class Instance():
 
             if self._modelType == "basic":
                 stop = self._data[0].shape[1] - (predYears * 2)
+                for j in range(stop): #Loops to year end minus test set
+
+                    thisx = [this[j] for this in x]
+                    yAct = self._data[0].iloc[i, range(j, j + predYears)]
+                    
+                    yPred = self._instance.calc(thisx)
+                    yPred = self.__AddGaussianNoise(yPred)
+
+                loss, gradient = self._instance.train(yPred, yAct) 
+                lossMean += loss
+
             elif self._modelType == "TCN":
                 stop = 1
                 trainto = self._data[0].shape[1] - predYears
-            for j in range(stop): #Loops to year end minus test set
 
-                if self._modelType == "basic":
-                    thisx = [this[j] for this in x]
-                elif self._modelType == "TCN":
-                    thisx = [this[:trainto] for this in x]
-                    #thisx = np.array(thisx).T
-                #print(len(thisx))
-                #print(len(thisx[0]))
-                
+
+                thisx = [this[:self._trainLength] for this in x]
+                yAct = self._data[0].iloc[i, range(self._yrToPredict, self._data[0].shape[1] - self._yrToPredict)]
+                #thisx = np.array(thisx).T
+
+
                 yPred = self._instance.calc(thisx)
                 yPred = self.__AddGaussianNoise(yPred)
-                yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
-                
                 loss, gradient = self._instance.train(yPred, yAct) 
                 lossMean += loss
 
@@ -263,19 +274,28 @@ class Instance():
             for i in range(self._data[0].shape[0]): #Loop through all countries
                 x = self.__GetX(i)
 
-                trainfrom = self._data[0].shape[0] - 5
+                trainfrom = self._yrToPredict * 2
                 
                 thisx = [this[trainfrom:] for this in x]
                 yPred = self._instance.calc(thisx)
-                yAct = self._data[0].iloc[i, range(j, j + predYears)]
+                yAct = self._data[0].iloc[i, (self._yrToPredict * 2):]
 
-
-                relCloseness = [abs(yAct[k]/ yPred[k]) for k in range(predYears)]
-                for k in range(predYears):
+                #print(yPred)
+                #print(yPred.shape, yAct.shape)
+                relCloseness = [abs(yAct[k]/ yPred[k]) for k in range(self._trainLength - trainfrom, yPred.shape[0])]
+                for k in range(len(relCloseness)):
                     if (relCloseness[k] > 1):
                         relCloseness[k] = 1 / relCloseness[k]
                 score.append(relCloseness)
 
+            #print(score)
+
+            total = [0] * self._yrToPredict
+            for i in score:
+                for j in range(self._yrToPredict):
+                    total[j] += i[j]
+            total = [i / len(score) for i in total] 
+            return total
 
 
     def __PrintProgress(self, i, countries, lossMean, gradient):

@@ -109,7 +109,7 @@ class TemporalBlock(nn.Module):
         return out
 
 class TCN(torch.nn.Module):
-    def __init__(self, yearLength: int, indexNo: int, channels: list, kernelSize=2):
+    def __init__(self, yearLength: int, indexNo: int, channels: list, kernelSize=3):
         super(TCN, self).__init__()
         layers = []
         depth = len(channels)
@@ -118,7 +118,7 @@ class TCN(torch.nn.Module):
             dilation = 2 ** i
             inC = indexNo if i == 0 else channels[i-1]
             outC = channels[i]
-            print(inC, outC)
+            #print(inC, outC)
             layers.append(TemporalBlock(yearLength, inC, outC, kernelSize, stride=1, dilation=dilation, padding=dilation * (kernelSize-1), dropout=0.2))
         
         #layers.append(nn.Dropout(p=0.2))
@@ -130,7 +130,7 @@ class TCN(torch.nn.Module):
 
     def calc(self, x):
         x = self.__tensorise(x)
-        return self.network(x)
+        return self.network(x)[0]
 
     def train(self, yPred, yAct):
         yPred = self.__tensorise(yPred)
@@ -138,6 +138,7 @@ class TCN(torch.nn.Module):
 
         self.optimizer.zero_grad()
 
+        #print(yPred.shape, yAct.shape)
         #print(yPred, yAct)
         loss = nn.functional.huber_loss(yPred, yAct)
         loss.backward()

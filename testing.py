@@ -27,7 +27,7 @@ test0.Run(5)
 accuracy = test0.TestModel()
 print(accuracy)
 """
-def BigTest():
+def DatasetTest():
     layerPos = [[20, 20],
                 [20, 30, 20],
                 [20, 30, 30, 20]]
@@ -67,10 +67,12 @@ def BigTest():
             #mean of 5
             for k in range(5):
                 test = Instance("basic", 
-                                layers,
-                                newData[0],
-                                newData[1],
-                                "slice")
+                                layers, 
+                                newData[0], 
+                                newData[1], 
+                                "slice", 
+                                1,
+                                5)
                 test.Run(5)
                 accuracy.append(test.TestModel())
 
@@ -97,11 +99,13 @@ def TCNtest():
     accuracy = []
     for k in range(5):
         test = Instance("TCN", 
-                        [40, 50, 40, 20, 10, 1],
+                        [40, 50, 80, 40, 20, 10, 1],
                         Data2[0],
                         Data2[1],
-                        "slice")
-        test.Run(5)
+                        "slice",
+                        None,
+                        5)
+        test.Run(20)
         accuracy.append(test.TestModel())
 
     mean = 0
@@ -111,7 +115,7 @@ def TCNtest():
     mean = mean / 25
     mean = float(mean)
     print(str(mean))
-    print(accuracy)
+    print(str(accuracy))
 
 
 TCNtest()
