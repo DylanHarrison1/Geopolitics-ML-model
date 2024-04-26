@@ -3,8 +3,7 @@ from torch import nn
 import numpy as np
 import pandas as pd
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-from keras.models import Sequential
-from keras.layers import LSTM, Dense
+
 
 
 class Model(torch.nn.Module):
@@ -72,7 +71,7 @@ class TemporalBlock(nn.Module):
     """
     Blocks repeated throughout the TCN's structure
     """
-    def __init__(self, yearLength, inSize, outSize, kernelSize, stride, dilation, padding, dropout=0.2):
+    def __init__(self, yearLength, inSize, outSize, kernelSize, stride, dilation, padding, dropout=0.05):
         super(TemporalBlock, self).__init__()
         self.relu = nn.ReLU()
 
@@ -93,10 +92,10 @@ class TemporalBlock(nn.Module):
         self.__Initialise_Weights()
 
     def __Initialise_Weights(self):
-        nn.init.kaiming_normal_(self.layers[1].weight, mode='fan_out', nonlinearity='relu')
-        nn.init.kaiming_normal_(self.layers[5].weight, mode='fan_out', nonlinearity='relu')
+        nn.init.kaiming_normal_(self.layers[1].weight)
+        nn.init.kaiming_normal_(self.layers[5].weight)
         if self.downsample is not None:
-            nn.init.kaiming_normal_(self.downsample.weight, mode='fan_out', nonlinearity='relu')
+            nn.init.kaiming_normal_(self.downsample.weight)
 
     def forward(self, x):
         #print(x.shape)
