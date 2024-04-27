@@ -99,13 +99,13 @@ def TCNtest():
     accuracy = []
     for k in range(5):
         test = Instance("TCN", 
-                        [40, 50, 40, 20, 10, 1],
+                        [40, 50, 60, 40, 20, 10, 1],
                         Data2[0],
                         Data2[1],
                         "slice",
                         None,
                         5)
-        test.Run(10)
+        test.Run(5)
         accuracy.append(test.TestModel())
 
     mean = 0

@@ -75,6 +75,7 @@ class Instance():
             self._instance = Model(modelType, modelStructure)
         elif modelType == "TCN":
             self._trainLength = self._data[0].shape[1] - (yrToPredict * 2)
+            #self._trainLength = 20
             self._instance = TCN(self._trainLength, 31, modelStructure)
             #print(self._data[0].shape[1], self._trainLength)#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             
@@ -100,6 +101,7 @@ class Instance():
         """
 
         for i in range(epochs):
+            print(i)
             self.__CountryLoop()
     
         #Saves model for further testing
