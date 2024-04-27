@@ -74,8 +74,8 @@ class Instance():
         if modelType == "basic":
             self._instance = Model(modelType, modelStructure)
         elif modelType == "TCN":
-            self._trainLength = self._data[0].shape[1] - (yrToPredict * 2)
-            #self._trainLength = 20
+            #self._trainLength = self._data[0].shape[1] - (yrToPredict * 2)
+            self._trainLength = 20
             self._instance = TCN(self._trainLength, 31, modelStructure)
             #print(self._data[0].shape[1], self._trainLength)#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             
@@ -101,7 +101,6 @@ class Instance():
         """
 
         for i in range(epochs):
-            print(i)
             self.__CountryLoop()
     
         #Saves model for further testing
@@ -131,27 +130,31 @@ class Instance():
                     thisx = [this[j] for this in x]
                     yAct = self._data[0].iloc[i, range(j, j + predYears)]
                     
-                    yPred = self._instance.calc(thisx)
+                    yPred = self._instance.forward(thisx)
                     yPred = self.__AddGaussianNoise(yPred)
 
                 loss, gradient = self._instance.train(yPred, yAct) 
                 lossMean += loss
 
             elif self._modelType == "TCN":
-                stop = 1
-                trainto = self._data[0].shape[1] - predYears
+    
+                for j in range(self._data[0].shape[1] - self._trainLength - (self._yrToPredict)):
+                    startIndex = j
+                    stopIndex = j + 20    
+
+                    trainto = self._data[0].shape[1] - predYears
 
 
-                thisx = [this[:self._trainLength] for this in x]
-                yAct = self._data[0].iloc[i, range(self._yrToPredict, self._data[0].shape[1] - self._yrToPredict)]
-                #thisx = np.array(thisx).T
+                    thisx = [this[startIndex:stopIndex] for this in x]
+                    yAct = self._data[0].iloc[i, range(startIndex + self._yrToPredict, stopIndex + self._yrToPredict)]
+                    #thisx = np.array(thisx).T
 
 
-                yPred = self._instance.calc(thisx)
-                yPred = self.__AddGaussianNoise(yPred)
+                    yPred = self._instance.forward(thisx)
+                    yPred = self.__AddGaussianNoise(yPred)
 
-                loss, gradient = self._instance.train(yPred, yAct) 
-                lossMean += loss
+                    loss, gradient = self._instance.train(yPred, yAct) 
+                    lossMean += loss
 
             
             if self._feedback:
@@ -253,7 +256,7 @@ class Instance():
                 for j in range(start, stop): #last years
                     
                     thisx = [this[j] for this in x]
-                    yPred = self._instance.calc(thisx)
+                    yPred = self._instance.forward(thisx)
                     yAct = self._data[0].iloc[i, range(j, j + predYears)]
 
 
@@ -279,7 +282,7 @@ class Instance():
                 trainfrom = self._yrToPredict * 2
                 
                 thisx = [this[trainfrom:] for this in x]
-                yPred = self._instance.calc(thisx)
+                yPred = self._instance.forward(thisx)
                 yAct = self._data[0].iloc[i, (self._yrToPredict * 2):]
 
                 #print(yPred)

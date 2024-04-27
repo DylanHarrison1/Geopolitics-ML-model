@@ -36,7 +36,7 @@ class Model(torch.nn.Module):
                 if i.bias is not None:
                     nn.init.constant_(i.bias, 0)
 
-    def calc(self, input):
+    def forward(self, input):
         input = self.__tensorise(input)
         return self.NN(input)
     
@@ -75,6 +75,7 @@ class TemporalBlock(nn.Module):
         super(TemporalBlock, self).__init__()
         self.relu = nn.ReLU()
 
+        #padding on 1st or 3rd
         mainlayers = [nn.ZeroPad1d((padding, 0)),
                       nn.Conv1d(inSize, outSize, kernelSize, stride=stride, padding=0, dilation=dilation),
                       nn.ReLU(),
@@ -83,7 +84,7 @@ class TemporalBlock(nn.Module):
                       nn.Conv1d(outSize, outSize, kernelSize, stride=stride, padding=0, dilation=dilation),
                       nn.ReLU(),
                       nn.Dropout(dropout)]
-        
+        #print(mainlayers)
         self.layers = torch.nn.Sequential(*mainlayers)
 
         self.downsample = None
@@ -92,10 +93,12 @@ class TemporalBlock(nn.Module):
         self.__Initialise_Weights()
 
     def __Initialise_Weights(self):
-        nn.init.kaiming_normal_(self.layers[1].weight)
-        nn.init.kaiming_normal_(self.layers[5].weight)
+        #nn.init.kaiming_normal_(self.layers[1].weight)
+        #nn.init.kaiming_normal_(self.layers[5].weight)
+        nn.init.normal_(self.layers[1].weight)
+        nn.init.normal_(self.layers[5].weight)
         if self.downsample is not None:
-            nn.init.kaiming_normal_(self.downsample.weight)
+            nn.init.normal_(self.downsample.weight)
 
     def forward(self, x):
         #print(x.shape)
@@ -118,7 +121,7 @@ class TCN(torch.nn.Module):
         depth = len(channels)
 
         for i in range(0, depth):
-            dilation = 2 ** i
+            dilation = 2 ** (i % 4)
             inC = indexNo if i == 0 else channels[i-1]
             outC = channels[i]
             #print(inC, outC)
@@ -129,9 +132,9 @@ class TCN(torch.nn.Module):
 
         self.network = nn.Sequential(*layers)
 
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.005)
 
-    def calc(self, x):
+    def forward(self, x):
         x = self.__tensorise(x)
         return self.network(x)[0]
 
@@ -143,7 +146,8 @@ class TCN(torch.nn.Module):
 
         #print(yPred.shape, yAct.shape)
         #print(yPred, yAct)
-        loss = nn.functional.huber_loss(yPred, yAct)
+        #loss = nn.functional.huber_loss(yPred, yAct)
+        loss = nn.functional.mse_loss(yPred, yAct)
         loss.backward()
 
         self.optimizer.step()

@@ -98,8 +98,9 @@ def TCNtest():
 
     accuracy = []
     for k in range(5):
+        print(k)
         test = Instance("TCN", 
-                        [40, 50, 60, 40, 20, 10, 1],
+                        [50, 80, 40, 20, 10, 1],
                         Data2[0],
                         Data2[1],
                         "slice",
@@ -115,7 +116,8 @@ def TCNtest():
     mean = mean / 25
     mean = float(mean)
     print(str(mean))
-    print(str(accuracy))
+    for x in range(5):
+        print(accuracy[x])
 
 
 TCNtest()
