@@ -152,9 +152,13 @@ class Instance():
 
                     yPred = self._instance.forward(thisx)
                     yPred = self.__AddGaussianNoise(yPred)
+                    #print("ypred " + str(yPred))
+                    #print("ypred " + str(yAct))
 
                     loss, gradient = self._instance.train(yPred, yAct) 
                     lossMean += loss
+                    #print("loss" + str(loss))
+                    #print("gradient" + str(gradient))
 
             
             if self._feedback:

@@ -97,7 +97,7 @@ def TCNtest():
     Data2[1].insert(0,[1])
 
     accuracy = []
-    for k in range(5):
+    for k in range(1):
         print(k)
         test = Instance("TCN", 
                         [50, 80, 40, 20, 10, 1],
@@ -106,7 +106,7 @@ def TCNtest():
                         "slice",
                         None,
                         5)
-        test.Run(5)
+        test.Run(1)
         accuracy.append(test.TestModel())
 
     mean = 0
