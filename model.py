@@ -113,6 +113,22 @@ class TemporalBlock(nn.Module):
         out += residual
         out = self.relu(out)
         return out
+    
+    def train(self, yPred, yAct):
+        yPred = self.__tensorise(yPred)
+        yAct = self.__tensorise(yAct)
+
+        self.optimizer.zero_grad()
+        
+        #print(yPred.shape, yAct.shape)
+        #print(yPred, yAct)
+        #loss = nn.functional.huber_loss(yPred, yAct)
+        loss = nn.functional.mse_loss(yPred, yAct)
+        print(loss)
+        loss.backward()
+
+        self.optimizer.step()
+        return loss, [param.grad for param in self.parameters()]
 
 class TCN(torch.nn.Module):
     def __init__(self, yearLength: int, indexNo: int, channels: list, kernelSize=3):
@@ -143,11 +159,12 @@ class TCN(torch.nn.Module):
         yAct = self.__tensorise(yAct)
 
         self.optimizer.zero_grad()
-
+        
         #print(yPred.shape, yAct.shape)
         #print(yPred, yAct)
         #loss = nn.functional.huber_loss(yPred, yAct)
         loss = nn.functional.mse_loss(yPred, yAct)
+        print(loss)
         loss.backward()
 
         self.optimizer.step()
