@@ -101,6 +101,7 @@ class Instance():
         """
 
         for i in range(epochs):
+            print(i)
             self.__CountryLoop()
     
         #Saves model for further testing
@@ -138,7 +139,7 @@ class Instance():
 
             elif self._modelType == "TCN":
     
-                for j in range(self._data[0].shape[1] - self._trainLength - (self._yrToPredict)):
+                for j in range(self._data[0].shape[1] - self._trainLength - (2 * self._yrToPredict)):
                     startIndex = j
                     stopIndex = j + 20    
 
@@ -146,15 +147,16 @@ class Instance():
 
 
                     thisx = [this[startIndex:stopIndex] for this in x]
-                    yAct = self._data[0].iloc[i, range(startIndex + self._yrToPredict, stopIndex + self._yrToPredict)]
+                    yAct = self._data[0].iloc[i, (startIndex + self._yrToPredict):(stopIndex + self._yrToPredict)]
                     #thisx = np.array(thisx).T
 
 
                     yPred = self._instance.forward(thisx)
-                    yPred = self.__AddGaussianNoise(yPred)
                     #print("ypred " + str(yPred))
-                    #print("ypred " + str(yAct))
-
+                    yPred = self.__AddGaussianNoise(yPred)
+                    
+                    #print("yAct " + str(yAct))
+                    
                     loss, gradient = self._instance.train(yPred, yAct) 
                     lossMean += loss
                     #print("loss" + str(loss))
@@ -278,6 +280,9 @@ class Instance():
             return total   
           
         elif self._modelType == "TCN":
+            startIndex = self._data[0].shape[1] - self._trainLength - (self._yrToPredict)
+            stopIndex = startIndex + self._trainLength
+
             predYears = (self._data[0].shape[0] - 5, self._data[0].shape[0])
             score = []  
             for i in range(self._data[0].shape[0]): #Loop through all countries
@@ -285,10 +290,11 @@ class Instance():
 
                 trainfrom = self._yrToPredict * 2
                 
-                thisx = [this[trainfrom:] for this in x]
+                thisx = [this[startIndex:stopIndex] for this in x]
                 yPred = self._instance.forward(thisx)
-                yAct = self._data[0].iloc[i, (self._yrToPredict * 2):]
-
+                yAct = self._data[0].iloc[i, (startIndex +self._yrToPredict):(stopIndex + self._yrToPredict)]
+                #print("ypred " + str(yPred))
+                #print("ypred " + str(yAct))
                 #print(yPred)
                 #print(yPred.shape, yAct.shape)
                 relCloseness = [abs(yAct[k]/ yPred[k]) for k in range(self._trainLength - trainfrom, yPred.shape[0])]
@@ -314,7 +320,7 @@ class Instance():
         gradmean = torch.mean(gradient[0])
         print("Latest Gradient Mean = " + str(gradmean))
     
-    def __AddGaussianNoise(self, data, mean=0, std=0.1):
+    def __AddGaussianNoise(self, data, mean=0, std=0.05):
         noise = torch.randn(data.size()) * std + mean
         return data + noise
     

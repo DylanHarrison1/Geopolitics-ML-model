@@ -99,15 +99,15 @@ def TCNtest():
     accuracy = []
     loops = 1
     for k in range(loops):
-        print(k)
+        print(str(k) + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         test = Instance("TCN", 
-                        [50, 80, 40, 20, 10, 1],
+                        [40, 20, 10, 1],
                         Data2[0],
                         Data2[1],
                         "slice",
                         None,
                         5)
-        test.Run(15)
+        test.Run(300)
         accuracy.append(test.TestModel())
 
     mean = 0
@@ -118,7 +118,7 @@ def TCNtest():
     mean = float(mean)
     print(str(mean))
     for y in range(loops):
-        print(accuracy[x])
+        print(accuracy[y])
 
 
 TCNtest()

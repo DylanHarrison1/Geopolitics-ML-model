@@ -71,8 +71,11 @@ class TemporalBlock(nn.Module):
     """
     Blocks repeated throughout the TCN's structure
     """
-    def __init__(self, yearLength, inSize, outSize, kernelSize, stride, dilation, padding, dropout=0.05):
+    def __init__(self, inSize, outSize, kernelSize, stride, dilation, padding, dropout, layer, modelSize):
         super(TemporalBlock, self).__init__()
+        self.layer = layer
+        self.modelSize = modelSize
+
         self.relu = nn.ReLU()
 
         #padding on 1st or 3rd
@@ -110,25 +113,14 @@ class TemporalBlock(nn.Module):
         
         #print(out.shape)
         #print(residual.shape)
+        #print("out " + str(out))
+        #print("residual " + str(residual))
         out += residual
-        out = self.relu(out)
+        #print("result " + str(out))
+        #if self.layer != self.modelSize - 2:
+        #    out = self.relu(out)
         return out
     
-    def train(self, yPred, yAct):
-        yPred = self.__tensorise(yPred)
-        yAct = self.__tensorise(yAct)
-
-        self.optimizer.zero_grad()
-        
-        #print(yPred.shape, yAct.shape)
-        #print(yPred, yAct)
-        #loss = nn.functional.huber_loss(yPred, yAct)
-        loss = nn.functional.mse_loss(yPred, yAct)
-        print(loss)
-        loss.backward()
-
-        self.optimizer.step()
-        return loss, [param.grad for param in self.parameters()]
 
 class TCN(torch.nn.Module):
     def __init__(self, yearLength: int, indexNo: int, channels: list, kernelSize=3):
@@ -137,21 +129,23 @@ class TCN(torch.nn.Module):
         depth = len(channels)
 
         for i in range(0, depth):
-            dilation = 2 ** (i % 4)
+            dilation = 2 ** (i)
             inC = indexNo if i == 0 else channels[i-1]
             outC = channels[i]
             #print(inC, outC)
-            layers.append(TemporalBlock(yearLength, inC, outC, kernelSize, stride=1, dilation=dilation, padding=dilation * (kernelSize-1), dropout=0.2))
+            layers.append(TemporalBlock(inC, outC, kernelSize, stride=1, dilation=dilation, padding=dilation * (kernelSize-1), dropout=0.2, layer=i, modelSize=depth ))
         
         #layers.append(nn.Dropout(p=0.2))
         #layers.append(nn.Linear(channels[-1], outputLength))
 
         self.network = nn.Sequential(*layers)
-
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.005)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.01)
 
     def forward(self, x):
         x = self.__tensorise(x)
+        #print("inp " + str(x))
+        #print("outp- " + str(self.network(x)[0]))
+
         return self.network(x)[0]
 
     def train(self, yPred, yAct):
@@ -164,7 +158,7 @@ class TCN(torch.nn.Module):
         #print(yPred, yAct)
         #loss = nn.functional.huber_loss(yPred, yAct)
         loss = nn.functional.mse_loss(yPred, yAct)
-        print(loss)
+        #print(loss)
         loss.backward()
 
         self.optimizer.step()
