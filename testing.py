@@ -87,6 +87,19 @@ def DatasetTest():
         #df.to_csv(os.getcwd() + "\Results.csv")    
 
 def TCNtest():
+    layerPos = [[20, 20, 1],
+                [20, 10, 1],
+                [30, 15, 1],
+                [40, 30, 20, 1],
+                [40, 20, 10, 1],
+                [50, 25, 10, 1],
+                [40, 50, 30, 10, 1],
+                [50, 40, 20, 10, 1],
+                [60, 40, 20, 10, 1],
+                [40, 50, 40, 20, 10, 1],
+                [50, 60, 40, 20, 10, 1],
+                [60, 80, 40, 20, 10, 1]]
+    
     inputSize = 0
     for innerList in Data2[1]:
         for item in innerList:
