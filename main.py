@@ -18,6 +18,7 @@ class Instance():
         feedback- do we want feedback? [__]
         graph- Dd we want to graph the result?
         """
+        torch.random.manual_seed(1)
         self._feedback = feedback
         self._graph = graph
         self._modelType = modelType
@@ -139,7 +140,7 @@ class Instance():
 
             elif self._modelType == "TCN":
     
-                for j in range(self._data[0].shape[1] - self._trainLength - (2 * self._yrToPredict)):
+                for j in range(self._data[0].shape[1] - self._trainLength - (self._yrToPredict)):
                     startIndex = j
                     stopIndex = j + 20    
 
@@ -292,9 +293,12 @@ class Instance():
                 
                 thisx = [this[startIndex:stopIndex] for this in x]
                 yPred = self._instance.forward(thisx)
-                yAct = self._data[0].iloc[i, (startIndex +self._yrToPredict):(stopIndex + self._yrToPredict)]
+                yAct = torch.tensor(self._data[0].iloc[i, (startIndex +self._yrToPredict):(stopIndex + self._yrToPredict)])
+                
+                loss = torch.nn.functional.mse_loss(yPred, yAct)
+                #print(loss)
                 #print("ypred " + str(yPred))
-                #print("ypred " + str(yAct))
+                #print("yact " + str(yAct))
                 #print(yPred)
                 #print(yPred.shape, yAct.shape)
                 relCloseness = [abs(yAct[k]/ yPred[k]) for k in range(self._trainLength - trainfrom, yPred.shape[0])]
@@ -320,7 +324,7 @@ class Instance():
         gradmean = torch.mean(gradient[0])
         print("Latest Gradient Mean = " + str(gradmean))
     
-    def __AddGaussianNoise(self, data, mean=0, std=0.05):
+    def __AddGaussianNoise(self, data, mean=0, std=0.1):
         noise = torch.randn(data.size()) * std + mean
         return data + noise
     

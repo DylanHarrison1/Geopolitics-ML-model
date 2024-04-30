@@ -76,8 +76,6 @@ class TemporalBlock(nn.Module):
         self.layer = layer
         self.modelSize = modelSize
 
-        self.relu = nn.ReLU()
-
         #padding on 1st or 3rd
         mainlayers = [nn.ZeroPad1d((padding, 0)),
                       nn.Conv1d(inSize, outSize, kernelSize, stride=stride, padding=0, dilation=dilation),
@@ -117,8 +115,9 @@ class TemporalBlock(nn.Module):
         #print("residual " + str(residual))
         out += residual
         #print("result " + str(out))
-        #if self.layer != self.modelSize - 2:
-        #    out = self.relu(out)
+        if self.layer != self.modelSize - 1:
+            relu = nn.ReLU()
+            out = relu(out)
         return out
     
 
@@ -139,7 +138,8 @@ class TCN(torch.nn.Module):
         #layers.append(nn.Linear(channels[-1], outputLength))
 
         self.network = nn.Sequential(*layers)
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.01)
+        #print(self.network)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.01,)
 
     def forward(self, x):
         x = self.__tensorise(x)

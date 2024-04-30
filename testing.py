@@ -87,6 +87,7 @@ def DatasetTest():
         #df.to_csv(os.getcwd() + "\Results.csv")    
 
 def TCNtest():
+    results = pd.read_csv(os.getcwd() + "\\Results\\modelResults.csv", index_col=None)
     layerPos = [[20, 20, 1],
                 [20, 10, 1],
                 [30, 15, 1],
@@ -110,28 +111,34 @@ def TCNtest():
     Data2[1].insert(0,[1])
 
     accuracy = []
-    loops = 1
-    for k in range(loops):
-        print(str(k) + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        test = Instance("TCN", 
-                        [40, 20, 10, 1],
-                        Data2[0],
-                        Data2[1],
-                        "slice",
-                        None,
-                        5)
-        test.Run(300)
-        accuracy.append(test.TestModel())
+    loops = 2
+    for i in layerPos:
+        for k in range(loops):
+            print(str(k) + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            test = Instance("TCN", 
+                            i,
+                            Data2[0],
+                            Data2[1],
+                            "slice",
+                            None,
+                            5)
+            test.Run(1)
+            accuracy.append(test.TestModel())
 
-    mean = 0
-    for x in range(5):
-        for y in range(loops):
-            mean += accuracy[y][x]
-    mean = mean / 25
-    mean = float(mean)
-    print(str(mean))
-    for y in range(loops):
-        print(accuracy[y])
+        mean = 0
+        for x in range(5):
+            for y in range(loops):
+                mean += accuracy[y][x]
+        mean = mean / 25
+        mean = float(mean)
+        print(str(mean))
+        #for y in range(loops):
+        #    print(accuracy[y])
+        toappend = pd.DataFrame({'Structure': [str(i)],
+                                 'Mean': [str(mean)]})
+        results = pd.concat([results,toappend], ignore_index=True)
+        
+        #results.to_csv(os.getcwd() + "\\Results\\modelResults.csv")
 
 
 TCNtest()
