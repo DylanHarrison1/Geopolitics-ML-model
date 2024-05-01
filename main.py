@@ -1,4 +1,4 @@
-from model import Model, TCN
+from model import Model, TempConvNet
 import pandas as pd
 import os
 import numpy as np
@@ -6,6 +6,11 @@ from preprocessing import RemoveColumns
 from preprocessing import ReadDF
 import matplotlib.pyplot as plt
 import torch
+#import keras
+from tcn import TCN
+    
+    
+
 
 class Instance():
 
@@ -77,7 +82,14 @@ class Instance():
         elif modelType == "TCN":
             #self._trainLength = self._data[0].shape[1] - (yrToPredict * 2)
             self._trainLength = 20
-            self._instance = TCN(self._trainLength, 31, modelStructure)
+            self._instance = TempConvNet(self._trainLength, 31, modelStructure)
+            """
+            model = keras.models.Sequential([TCN(input_shape=(80, n_features), 
+                                                 nb_filters=256, 
+                                                 return_sequences=True, 
+                                                 dilations=[1, 2, 4, 8, 16, 32]), 
+                                                 keras.layers.Dense(1)])
+"""
             #print(self._data[0].shape[1], self._trainLength)#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             
         #self._data[0].shape[0] - 5
