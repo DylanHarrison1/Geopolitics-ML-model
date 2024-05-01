@@ -97,15 +97,15 @@ class TemporalBlock(nn.Module):
         residual = x
         out = self.layers(x)
 
-        #if self.downsample is not None:
-            #residual = self.downsample(residual)
+        if self.downsample is not None:
+            residual = self.downsample(residual)
         
         #print(out.shape)
         #print(residual.shape)
         #print("out " + str(out))
         #print("residual " + str(residual))
 
-        #out += residual
+        out += residual
 
         #print("result " + str(out))
         if self.layer != self.modelSize - 1:
@@ -117,20 +117,19 @@ class TemporalBlock(nn.Module):
 class TempConvNet(torch.nn.Module):
     def __init__(self, yearLength: int, indexNo: int, channels: list, kernelSize=3):
         super(TempConvNet, self).__init__()
-        self.layers = []
+        layers = []
         depth = len(channels)
 
         for i in range(0, depth):
             dilation = 2 ** (i)
             inC = indexNo if i == 0 else channels[i-1]
             outC = channels[i]
-            #print(inC, outC)
-            self.layers.append(TemporalBlock(inC, outC, kernelSize, stride=1, dilation=dilation, padding=dilation * (kernelSize-1), dropout=0.2, layer=i, modelSize=depth ))
+            layers.append(TemporalBlock(inC, outC, kernelSize, stride=1, dilation=dilation, padding=dilation * (kernelSize-1), dropout=0.2, layer=i, modelSize=depth ))
             
-        #self.network = nn.Sequential(*layers)
-        self.network = nn.Sequential(*self.layers)
+        
+        self.network = nn.Sequential(*layers)
         #print(self.network)
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.01,)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.005,)
 
         self.__initialiseWeights()
     
@@ -162,6 +161,7 @@ class TempConvNet(torch.nn.Module):
         loss.backward()
 
         self.optimizer.step()
+
         return loss, [param.grad for param in self.parameters()]
     
 

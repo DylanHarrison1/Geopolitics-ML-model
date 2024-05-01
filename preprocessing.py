@@ -20,7 +20,7 @@ def ReadDF(path: str, index: int = None) -> pd.DataFrame:
     df = pd.read_csv(path, index_col=index)
     return df
 
-def AddEmptyColumns(file: str, interpolate: bool) -> None:
+def AddEmptyColumns(df: pd.DataFrame, interpolate: bool) -> pd.DataFrame:
     '''
     Designed for DB's ordered by year. 
     If some years are missing, it will add them in with 
@@ -28,8 +28,8 @@ def AddEmptyColumns(file: str, interpolate: bool) -> None:
     "interpolate" is True or False")
     '''
 
-    filename = os.getcwd() + file
-    df = pd.read_csv(filename)
+    #filename = os.getcwd() + file
+    #df = pd.read_csv(filename)
 
     # Get list of column names
     years = df.columns[1:]
@@ -47,13 +47,14 @@ def AddEmptyColumns(file: str, interpolate: bool) -> None:
                 if interpolate:
                     newColumn = InterpolateColumn(df, years[i], years[i+1], newYear)
                 else:
-                    newColumn = pd.Series("", name=str(newYear), index=df.index)
+                    newColumn = pd.Series("0", name=str(newYear), index=df.index)
                 
                 newColumns.append(newColumn)
 
     df = pd.concat([df] + newColumns, axis=1)
     df = OrderByDate(df)
-    df.to_csv(filename, index=False)
+    #df.to_csv(filename, index=False)
+    return df
 
 def InterpolateColumn(df: pd.DataFrame, year1: int, year2: int, newYear: int) -> pd.DataFrame:
     '''

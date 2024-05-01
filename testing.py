@@ -88,7 +88,11 @@ def DatasetTest():
 
 def TCNtest():
     results = pd.read_csv(os.getcwd() + "\\Results\\modelResults.csv", index_col=None)
-    layerPos = [[20, 20, 1],
+    layerPos = [[1],
+                [10, 1],
+                [20, 1],
+                [30, 1],
+                [20, 20, 1],
                 [20, 10, 1],
                 [30, 15, 1],
                 [40, 30, 20, 1],
@@ -110,9 +114,10 @@ def TCNtest():
     Data2[0].insert(0,"HDI")
     Data2[1].insert(0,[1])
 
-    accuracy = []
-    loops = 2
+    
+    loops = 5
     for i in layerPos:
+        accuracy = []
         for k in range(loops):
             print(str(k) + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             test = Instance("TCN", 
@@ -122,7 +127,7 @@ def TCNtest():
                             "slice",
                             None,
                             5)
-            test.Run(1)
+            test.Run(10)
             accuracy.append(test.TestModel())
 
         mean = 0
@@ -135,10 +140,10 @@ def TCNtest():
         #for y in range(loops):
         #    print(accuracy[y])
         toappend = pd.DataFrame({'Structure': [str(i)],
-                                 'Mean': [str(mean)]})
+                                 'Mean': [str(mean)]}, index=None)
         results = pd.concat([results,toappend], ignore_index=True)
         
-        #results.to_csv(os.getcwd() + "\\Results\\modelResults.csv")
+        results.to_csv(os.getcwd() + "\\Results\\modelResults.csv")
 
 
 TCNtest()
