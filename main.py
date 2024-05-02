@@ -90,7 +90,7 @@ class Instance():
             self._instance = Model(modelType, modelStructure)
         elif modelType == "TCN":
             #self._trainLength = self._data[0].shape[1] - (yrToPredict * 2)
-            self._trainLength = 20
+            self._trainLength = 10
             self._instance = TempConvNet(self._trainLength, 31, modelStructure)
             """
             model = keras.models.Sequential([TCN(input_shape=(80, n_features), 

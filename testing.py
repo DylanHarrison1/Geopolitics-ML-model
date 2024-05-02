@@ -115,19 +115,19 @@ def TCNtest():
     Data2[1].insert(0,[1])
 
     
-    loops = 5
+    loops = 1
     for i in layerPos:
         accuracy = []
         for k in range(loops):
             print(str(k) + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             test = Instance("TCN", 
-                            i,
+                            [10,1],
                             Data2[0],
                             Data2[1],
                             "slice",
                             None,
                             5)
-            test.Run(10)
+            test.Run(20)
             accuracy.append(test.TestModel())
 
         mean = 0
