@@ -124,12 +124,12 @@ class TempConvNet(torch.nn.Module):
             dilation = 2 ** (i)
             inC = indexNo if i == 0 else channels[i-1]
             outC = channels[i]
-            layers.append(TemporalBlock(inC, outC, kernelSize, stride=1, dilation=dilation, padding=dilation * (kernelSize-1), dropout=0.2, layer=i, modelSize=depth ))
+            layers.append(TemporalBlock(inC, outC, kernelSize, stride=1, dilation=dilation, padding=dilation * (kernelSize-1), dropout=0.20, layer=i, modelSize=depth ))
             
         
         self.network = nn.Sequential(*layers)
         #print(self.network)
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.005,)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.004999,)
 
         self.__initialiseWeights()
     

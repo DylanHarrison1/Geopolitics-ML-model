@@ -20,6 +20,8 @@ class Instance():
         datasets- list of datasets used to train[__]
         indices- which indices are we using from each dataset[__]
         combMethod- how are we combining datasets? extrapolate, min, train[__]
+        trainLength- How many years worth of data are we using as input (only for TCN)[__]
+        yrToPredict- How many years are being predicted?
         feedback- do we want feedback? [__]
         graph- Dd we want to graph the result?
         """
@@ -87,22 +89,17 @@ class Instance():
 
         #Creates Model
         if modelType == "basic":
-            self._instance = Model(modelType, modelStructure)
+            self._instance = Model(modelStructure)
         elif modelType == "TCN":
             #self._trainLength = self._data[0].shape[1] - (yrToPredict * 2)
-            self._trainLength = 10
+            self._trainLength = trainLength
             self._instance = TempConvNet(self._trainLength, 31, modelStructure)
-            """
-            model = keras.models.Sequential([TCN(input_shape=(80, n_features), 
-                                                 nb_filters=256, 
-                                                 return_sequences=True, 
-                                                 dilations=[1, 2, 4, 8, 16, 32]), 
-                                                 keras.layers.Dense(1)])
-"""
-            #print(self._data[0].shape[1], self._trainLength)#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            
-        #self._data[0].shape[0] - 5
-
+          
+        elif modelType == "TCN+":
+            pass
+            self._trainLength = trainLength
+            for data in self._data:
+                pass
 
     def Run(self, epochs):
         """
@@ -112,7 +109,7 @@ class Instance():
         """
 
         for i in range(epochs):
-            print(i)
+            #print(i)
             self.__CountryLoop()
     
         #Saves model for further testing
@@ -152,13 +149,15 @@ class Instance():
     
                 for j in range(self._data[0].shape[1] - self._trainLength - (self._yrToPredict)):
                     startIndex = j
-                    stopIndex = j + 20    
+                    stopIndex = j + self._trainLength    
+                    startPred = startIndex + self._yrToPredict
+                    stopPred = stopIndex + self._yrToPredict
 
                     trainto = self._data[0].shape[1] - predYears
 
 
                     thisx = [this[startIndex:stopIndex] for this in x]
-                    yAct = self._data[0].iloc[i, (startIndex + self._yrToPredict):(stopIndex + self._yrToPredict)]
+                    yAct = self._data[0].iloc[i, startPred:stopPred]
                     #thisx = np.array(thisx).T
 
 
@@ -173,10 +172,10 @@ class Instance():
                     #print("loss" + str(loss))
                     #print("gradient" + str(gradient))
 
-            
-            if self._feedback:
+            if self._graph:
                 lossMean /= len(x)
-                self._lossData.append(lossMean)        
+                self._lossData.append(lossMean)  
+            if self._feedback:
                 self.__PrintProgress(i, self._data[0].shape[0], lossMean, gradient)
 
     def __OldCountryLoop(self, Demog, LDI, HDI, Testing):
@@ -246,7 +245,7 @@ class Instance():
         
         plt.figure(figsize=(8, 5))
         plt.scatter(x, data, color='green', label='Data Points')
-        plt.plot(x, m*x + b, color='red', label='Line of Best Fit')
+        #plt.plot(x, m*x + b, color='red', label='Line of Best Fit')
         #Stop outliers from distorting the graph
         plt.ylim(min(data), max(data) * 0.5)
         

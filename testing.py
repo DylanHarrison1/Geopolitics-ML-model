@@ -88,22 +88,9 @@ def DatasetTest():
 
 def TCNtest():
     results = pd.read_csv(os.getcwd() + "\\Results\\modelResults.csv", index_col=None)
-    layerPos = [[1],
-                [10, 1],
+    layerPos = [[10, 1],
                 [20, 1],
-                [30, 1],
-                [20, 20, 1],
-                [20, 10, 1],
-                [30, 15, 1],
-                [40, 30, 20, 1],
-                [40, 20, 10, 1],
-                [50, 25, 10, 1],
-                [40, 50, 30, 10, 1],
-                [50, 40, 20, 10, 1],
-                [60, 40, 20, 10, 1],
-                [40, 50, 40, 20, 10, 1],
-                [50, 60, 40, 20, 10, 1],
-                [60, 80, 40, 20, 10, 1]]
+                [30, 1]]
     
     inputSize = 0
     for innerList in Data2[1]:
@@ -116,34 +103,95 @@ def TCNtest():
 
     
     loops = 1
-    for i in layerPos:
+    for i in range(1, 40):
         accuracy = []
         for k in range(loops):
             print(str(k) + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             test = Instance("TCN", 
-                            [10,1],
+                            [3,1],
                             Data2[0],
                             Data2[1],
                             "slice",
-                            None,
+                            20,
                             5)
-            test.Run(20)
+            test.Run(10)
             accuracy.append(test.TestModel())
 
         mean = 0
         for x in range(5):
             for y in range(loops):
                 mean += accuracy[y][x]
-        mean = mean / 25
+        mean = mean / (5 * loops)
         mean = float(mean)
         print(str(mean))
+        for y in range(loops):
+            print(accuracy[y])
+        #toappend = pd.DataFrame({'Structure': [str(i)],
+                                 #'Mean': [str(mean)]}, index=None)
+        #results = pd.concat([results,toappend], ignore_index=True)
+        
+        #results.to_csv(os.getcwd() + "\\Results\\modelResults.csv")
+
+def TCNmanual():
+    results = pd.read_csv(os.getcwd() + "\\Results\\trainlengthResult.csv", index_col=None)
+    inputSize = 0
+    for innerList in Data2[1]:
+        for item in innerList:
+            if isinstance(item, int):
+                inputSize += 1
+
+    Data2[0].insert(0,"HDI")
+    Data2[1].insert(0,[1])
+
+    
+    loops = 1
+    accuracy = []
+    for k in range(loops):
+        print(str(k) + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        test = Instance("TCN", 
+                        [3,1],
+                        Data2[0],
+                        Data2[1],
+                        "slice",
+                        12,
+                        5,
+                        graph=True)
+        test.Run(100)
+        accuracy.append(test.TestModel())
+
+    mean = 0
+    for x in range(5):
+        for y in range(loops):
+            mean += accuracy[y][x]
+    mean = mean / (5*loops)
+    mean = float(mean)
+    print(str(mean))
         #for y in range(loops):
         #    print(accuracy[y])
-        toappend = pd.DataFrame({'Structure': [str(i)],
-                                 'Mean': [str(mean)]}, index=None)
-        results = pd.concat([results,toappend], ignore_index=True)
-        
-        results.to_csv(os.getcwd() + "\\Results\\modelResults.csv")
+    #toappend = pd.DataFrame({'length': [str(i)],
+                                 #'accuracy': [str(mean)]}, index=None)
+    #results = pd.concat([results,toappend], ignore_index=True)
+    #results.to_csv(os.getcwd() + "\\Results\\trainlengthResult.csv")
 
+def SLtest():
+    inputSize = 0
+    for innerList in Data2[1]:
+        for item in innerList:
+            if isinstance(item, int):
+                inputSize += 1
 
-TCNtest()
+    accuracy = []
+    Data2[0].insert(0,"HDI")
+    Data2[1].insert(0,[1])
+    test = Instance("basic", 
+                                [31, 40, 30, 30, 20, 5], 
+                                Data2[0], 
+                                Data2[1], 
+                                "slice", 
+                                1,
+                                5)
+    test.Run(5)
+    accuracy.append(test.TestModel())
+    print(accuracy)
+
+SLtest()
