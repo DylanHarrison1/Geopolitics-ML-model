@@ -152,7 +152,7 @@ def TCNmanual():
                         [3,1],
                         Data2[0],
                         Data2[1],
-                        "slice",
+                        "zero",
                         12,
                         5,
                         graph=False)
@@ -214,4 +214,4 @@ def SLtest():
         #results = pd.concat([results,toappend], ignore_index=True)
         #results.to_csv(os.getcwd() + "\\Results\\SLResult.csv")
 
-SLtest()
+TCNmanual()
