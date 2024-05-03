@@ -178,65 +178,6 @@ class Instance():
             if self._feedback:
                 self.__PrintProgress(i, self._data[0].shape[0], lossMean, gradient)
 
-    def __OldCountryLoop(self, Demog, LDI, HDI, Testing):
-        
-            score = []
-
-            #loops through all coutries in Demography
-            for j in range(0, 5544, 99):
-                x1 = Demog.iloc[[j + 8, j + 93, j + 94, j + 95], range(7, 73)]
-                x2 = self.__DemogToHDI_LDI(LDI, Demog.iloc[(j,0)])
-                x = pd.concat([x1, x2], ignore_index=True)
-                y = self.__DemogToHDI_LDI(HDI, Demog.iloc[(j,0)])
-
-                if not isinstance(y, pd.DataFrame):
-                    continue
-                elif y.isna().any().any():
-                #Checks all cells have some value
-                    continue
-                y = y.values
-
-                #Loops through all years for country
-                lossMean = 0
-
-                if Testing:
-                        k = x.shape[1] - 1
-                        yPred = self._instance.calc(x.iloc[:,k]).detach().numpy()
-                        yAct = y[0, range(k, k+5)]
-                        
-                        #fixes relative closeness between 0 and 1
-                        relCloseness = [abs(yAct[i]/ yPred[i]) for i in range(5)]
-                        for i in range(5):
-                            if (relCloseness[i] > 1):
-                                relCloseness[i] = 1 / relCloseness[i]
-                        score.append(relCloseness)
-
-                else:
-                    
-                    #Main training
-                    for k in range(x.shape[1] - 5):
-                        yPred = self._instance.calc(x.iloc[:,k])
-                        yPred = self.__AddGaussianNoise(yPred)
-
-                        loss, gradient = self._instance.train(yPred, y[0, range(k, k+5)]) 
-                        lossMean += loss
-
-                    lossMean /= x.shape[1]
-                    self._lossData.append(lossMean)
-                    if self._feedback:
-                        
-                        self.__PrintProgress(j, lossMean, gradient)
-
-            if Testing:
-                total = [0,0,0,0,0]
-                for i in score:
-                    for j in range(len(total)):
-                        total[j] += i[j]
-                total = [i / len(score) for i in total] 
-                return total
-            
-            return None
-
     def __PrintGraph(self):
         data = [i.detach().numpy() for i in self._lossData]
         x = np.arange(len(data))
@@ -310,6 +251,7 @@ class Instance():
                 #print("yact " + str(yAct))
                 #print(yPred)
                 #print(yPred.shape, yAct.shape)
+                
                 relCloseness = [abs(yAct[k]/ yPred[k]) for k in range(self._trainLength - trainfrom, yPred.shape[0])]
                 for k in range(len(relCloseness)):
                     if (relCloseness[k] > 1):
@@ -325,7 +267,6 @@ class Instance():
             total = [i / len(score) for i in total] 
             return total
 
-
     def __PrintProgress(self, i, countries, lossMean, gradient):
         print("~~~~~~~~~~~~~~~~~~~~~~~~")
         print(str(i) + "/" + str(countries) + ". Mean Loss = " + str(lossMean))
@@ -333,7 +274,7 @@ class Instance():
         gradmean = torch.mean(gradient[0])
         print("Latest Gradient Mean = " + str(gradmean))
     
-    def __AddGaussianNoise(self, data, mean=0, std=0.1):
+    def __AddGaussianNoise(self, data, mean=0, std=0.001):
         noise = torch.randn(data.size()) * std + mean
         return data + noise
     

@@ -155,8 +155,8 @@ def TCNmanual():
                         "slice",
                         12,
                         5,
-                        graph=True)
-        test.Run(100)
+                        graph=False)
+        test.Run(10)
         accuracy.append(test.TestModel())
 
     mean = 0
@@ -174,24 +174,44 @@ def TCNmanual():
     #results.to_csv(os.getcwd() + "\\Results\\trainlengthResult.csv")
 
 def SLtest():
+    results = pd.read_csv(os.getcwd() + "\\Results\\SLResult.csv", index_col=None)
+    layerPos = [[31, 40, 30, 20, 10, 5]]
     inputSize = 0
     for innerList in Data2[1]:
         for item in innerList:
             if isinstance(item, int):
                 inputSize += 1
-
-    accuracy = []
     Data2[0].insert(0,"HDI")
     Data2[1].insert(0,[1])
-    test = Instance("basic", 
-                                [31, 40, 30, 30, 20, 5], 
-                                Data2[0], 
-                                Data2[1], 
-                                "slice", 
-                                1,
-                                5)
-    test.Run(5)
-    accuracy.append(test.TestModel())
-    print(accuracy)
+
+    for i in layerPos:
+        struct = i
+        struct.insert(0, 31)
+        struct.append(5)
+        accuracy = []
+        loops = 5
+        for j in range(loops):
+           
+            test = Instance("basic", 
+                                        struct, 
+                                        Data2[0], 
+                                        Data2[1], 
+                                        "slice", 
+                                        1,
+                                        5)
+            test.Run(100)
+            accuracy.append(test.TestModel())
+            print(accuracy)
+        mean = 0
+        for x in range(5):
+            for y in range(loops):
+                mean += accuracy[y][x]
+        mean = mean / (5*loops)
+        mean = float(mean)
+        print(str(mean))
+        #toappend = pd.DataFrame({'structure': [str(i)],
+        #                        'accuracy': [str(mean)]}, index=None)
+        #results = pd.concat([results,toappend], ignore_index=True)
+        #results.to_csv(os.getcwd() + "\\Results\\SLResult.csv")
 
 SLtest()

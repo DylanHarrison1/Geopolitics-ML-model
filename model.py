@@ -26,7 +26,7 @@ class Model(torch.nn.Module):
         self.NN = torch.nn.Sequential(*layers)
             
 
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.005)
         self.__initialize_weights()
 
     def __initialize_weights(self):
@@ -178,5 +178,3 @@ class TempConvNet(torch.nn.Module):
     
         return x
 
-
-       
