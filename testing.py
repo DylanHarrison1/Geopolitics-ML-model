@@ -3,8 +3,6 @@ import pandas as pd
 import os
 import copy
 
-#In model, layer is a list. We could pass that all the way in.
-
 
 Data = [["V-Party", "Demographics", "Disasters", "Geopol Risk", "N R R", "V-Dem", "Worldcities"],
         [[0,1,2,7,21,22], [6,7,8,93,94,95], [2,3,4,5,6,7,8,9], [0], [0], [1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]

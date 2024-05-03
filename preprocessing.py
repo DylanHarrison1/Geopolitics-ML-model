@@ -382,6 +382,7 @@ def ProcessCities2(path: str) -> None:
         df[name] = col3
 
     df.to_csv(os.getcwd() + "\\test3.csv")
+
 '''
 Code used to run functions
 '''
