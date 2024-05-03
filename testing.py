@@ -10,7 +10,7 @@ Data = [["V-Party", "Demographics", "Disasters", "Geopol Risk", "N R R", "V-Dem"
 Data2 =  [["V-Party", "Disasters", "Geopol Risk", "N R R", "V-Dem", "Worldcities"],
           [[0,1,2,7,21,22], [2,3,4,5,6,7,8,9], [0], [0], [1,2,3,4,5,6,7,8,9,10], [0,1,2,3,4]]]
 
-df = pd.read_csv(os.getcwd() + "\Results.csv")
+df = pd.read_csv(os.getcwd() + "\\Results\\Results.csv")
 
 
 """
@@ -212,4 +212,4 @@ def SLtest():
         #results = pd.concat([results,toappend], ignore_index=True)
         #results.to_csv(os.getcwd() + "\\Results\\SLResult.csv")
 
-TCNmanual()
+SLtest()
