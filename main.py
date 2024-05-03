@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import numpy as np
 from preprocessing import RemoveColumns
-from preprocessing import ReadDF, AddEmptyColumns
+from preprocessing import ReadDF
 import matplotlib.pyplot as plt
 import torch
 #import keras
@@ -69,17 +69,7 @@ class Instance():
                 commonCountries = commonCountries.intersection(df.iloc[:, 0])
             for df in self._data:  
                 df.drop(df[~df.iloc[:, 0].isin(commonCountries)].index, inplace=True)
-        elif(combMethod == "zero"):
-            for df in self._data:
-                df = AddEmptyColumns(df, False)
-
-            #Slicing Countries (identical to if (combMethod == "slice"))
-            commonCountries = set(self._data[0].iloc[:, 0])
-            for df in self._data:  
-                commonCountries = commonCountries.intersection(df.iloc[:, 0])
-            for df in self._data:  
-                df.drop(df[~df.iloc[:, 0].isin(commonCountries)].index, inplace=True)
-
+        
         #Loses index names, only a hindrance now
         for i in range(len(self._data)):
             columns = range(int(meta.iloc[i, 2]))
