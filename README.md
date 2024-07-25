@@ -27,4 +27,3 @@ One of the zip files will contain the main directory, containing the python file
  The data belonging to each of these folders will be zipped seperately, and labelled 
   appropriately. The csv files should be copied directly into these folders, and
   not be contained in any subdirectories.
-  If you have any complications, you can email me at dh893@bath.ac.uk
